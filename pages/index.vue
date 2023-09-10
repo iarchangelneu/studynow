@@ -13,13 +13,13 @@
                             aria-describedby="basic-addon1">
 
                         <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1"><img src="@/assets/img/search.svg"
-                                    alt=""></span>
+                            <span class="input-group-text" id="basic-addon1"><img src="@/assets/img/search.svg" alt=""
+                                    loading="lazy"></span>
                         </div>
                     </div>
                 </div>
 
-                <div class="mouse">
+                <a class="mouse d-block" href="#sales">
                     <svg width="40" height="72" viewBox="0 0 40 72" fill="none" xmlns="http://www.w3.org/2000/svg">
                         <path
                             d="M19.9997 46.9997V41.9997M19.9997 68.6663C13.5564 68.6663 8.33301 63.443 8.33301 56.9997V46.9997C8.33301 40.5564 13.5564 35.333 19.9997 35.333C26.443 35.333 31.6663 40.5564 31.6663 46.9997V56.9997C31.6663 63.443 26.443 68.6663 19.9997 68.6663Z"
@@ -28,19 +28,20 @@
                         <circle cx="20" cy="8" r="4" fill="black" />
                     </svg>
 
-                </div>
+                </a>
             </div>
 
         </div>
 
         <div class="page">
             <div class="sales">
+                <a name="sales"></a>
                 <h1>Акции и скидки</h1>
 
                 <div class="sales__body">
 
                     <div class="sales__block">
-                        <img src="@/assets/img/sales1.png" alt="">
+                        <img src="@/assets/img/sales1.png" alt="" loading="lazy">
                         <h2>Курсы визажиста «Make-up с нуля»</h2>
                         <p>Погрузись в мир красоты с курсом от профессионалов</p>
 
@@ -53,7 +54,7 @@
                         <div class="price">
                             <span>
                                 15 000 ₸
-                                <img src="@/assets/img/disc.svg" alt="">
+                                <img src="@/assets/img/disc.svg" alt="" loading="lazy">
                             </span>
                             <h3>13 000 ₸</h3>
                             <div></div>
@@ -70,7 +71,7 @@
                     </div>
 
                     <div class="sales__block">
-                        <img src="@/assets/img/sales2.png" alt="">
+                        <img src="@/assets/img/sales2.png" alt="" loading="lazy">
                         <h2>«Сам себе кондитер»</h2>
                         <p>Начни зарабатывать, продавая домашнюю выпечку</p>
 
@@ -83,7 +84,7 @@
                         <div class="price">
                             <span>
                                 20 000 ₸
-                                <img src="@/assets/img/disc.svg" alt="">
+                                <img src="@/assets/img/disc.svg" alt="" loading="lazy">
                             </span>
                             <h3>15 000 ₸</h3>
                             <div></div>
@@ -100,7 +101,7 @@
                     </div>
 
                     <div class="sales__block">
-                        <img src="@/assets/img/sales3.png" alt="">
+                        <img src="@/assets/img/sales3.png" alt="" loading="lazy">
                         <h2>Современная профессия «Старт в smm»</h2>
                         <p>Комфортные условия для работы из дома</p>
 
@@ -113,7 +114,7 @@
                         <div class="price">
                             <span>
                                 60 000 ₸
-                                <img src="@/assets/img/disc.svg" alt="">
+                                <img src="@/assets/img/disc.svg" alt="" loading="lazy">
                             </span>
                             <h3>44 900 ₸</h3>
                             <div></div>
@@ -130,7 +131,7 @@
                     </div>
 
                     <div class="sales__block">
-                        <img src="@/assets/img/sales4.png" alt="">
+                        <img src="@/assets/img/sales4.png" alt="" loading="lazy">
                         <h2>«Гуру массажа»</h2>
                         <p>Экспертный курс для безопасного массажа</p>
 
@@ -143,7 +144,7 @@
                         <div class="price">
                             <span>
                                 14 000 ₸
-                                <img src="@/assets/img/disc.svg" alt="">
+                                <img src="@/assets/img/disc.svg" alt="" loading="lazy">
                             </span>
                             <h3>11 000 ₸</h3>
                             <div></div>
@@ -160,7 +161,7 @@
                     </div>
 
                     <div class="sales__block">
-                        <img src="@/assets/img/sales5.png" alt="">
+                        <img src="@/assets/img/sales5.png" alt="" loading="lazy">
                         <h2>Курсы «Иллюстратор будущего»</h2>
                         <p>Рисунки на бумаге и графическом планшете</p>
 
@@ -173,7 +174,7 @@
                         <div class="price">
                             <span>
                                 37 000 ₸
-                                <img src="@/assets/img/disc.svg" alt="">
+                                <img src="@/assets/img/disc.svg" alt="" loading="lazy">
                             </span>
                             <h3>27 000 ₸</h3>
                             <div></div>
@@ -192,7 +193,7 @@
                 </div>
 
                 <div class="text-center link">
-                    <NuxtLink to="/">Посмотреть все</NuxtLink>
+                    <NuxtLink to="/catalog">Посмотреть все</NuxtLink>
                 </div>
             </div>
 
@@ -203,38 +204,38 @@
                     <div>
                         <NuxtLink to="/">
                             <span> IT</span>
-                            <img src="@/assets/img/arrownt.svg" alt="">
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
                         <NuxtLink to="/">
                             <span> Красота и здоровье</span>
-                            <img src="@/assets/img/arrownt.svg" alt="">
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
                         <NuxtLink to="/">
                             <span>Творчество и хобби</span>
-                            <img src="@/assets/img/arrownt.svg" alt="">
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
                         <NuxtLink to="/">
                             <span> Психология</span>
-                            <img src="@/assets/img/arrownt.svg" alt="">
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
 
                     </div>
                     <div>
                         <NuxtLink to="/">
                             <span> Духовное развитие</span>
-                            <img src="@/assets/img/arrownt.svg" alt="">
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
                         <NuxtLink to="/">
                             <span> Дети</span>
-                            <img src="@/assets/img/arrownt.svg" alt="">
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
                         <NuxtLink to="/">
                             <span>Маркетинг</span>
-                            <img src="@/assets/img/arrownt.svg" alt="">
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
                         <NuxtLink to="/">
                             <span>Финансы</span>
-                            <img src="@/assets/img/arrownt.svg" alt="">
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
 
                     </div>
@@ -242,19 +243,19 @@
                     <div>
                         <NuxtLink to="/">
                             <span> Радиотехника</span>
-                            <img src="@/assets/img/arrownt.svg" alt="">
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
                         <NuxtLink to="/">
                             <span> Бесплатные курсы</span>
-                            <img src="@/assets/img/arrownt.svg" alt="">
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
                         <NuxtLink to="/">
                             <span>Приготовление пищи</span>
-                            <img src="@/assets/img/arrownt.svg" alt="">
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
                         <NuxtLink to="/">
                             <span>Съёмка</span>
-                            <img src="@/assets/img/arrownt.svg" alt="">
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
 
                     </div>
@@ -262,17 +263,17 @@
                     <div>
                         <NuxtLink to="/">
                             <span> Языки</span>
-                            <img src="@/assets/img/arrownt.svg" alt="">
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
 
                         <NuxtLink to="/">
                             <span>Бизнес</span>
-                            <img src="@/assets/img/arrownt.svg" alt="">
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
 
                         <NuxtLink to="/">
                             <span>Спорт</span>
-                            <img src="@/assets/img/arrownt.svg" alt="">
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
 
                     </div>
@@ -280,17 +281,17 @@
                     <div>
                         <NuxtLink to="/">
                             <span> Разработка игр</span>
-                            <img src="@/assets/img/arrownt.svg" alt="">
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
 
                         <NuxtLink to="/">
                             <span>Продажи</span>
-                            <img src="@/assets/img/arrownt.svg" alt="">
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
 
                         <NuxtLink to="/">
                             <span>Мода</span>
-                            <img src="@/assets/img/arrownt.svg" alt="">
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
 
                     </div>
@@ -300,12 +301,13 @@
             </div>
 
             <div class="popular">
+                <a name="popular"></a>
                 <h1>Популярное</h1>
 
                 <div class="sales__body">
 
                     <div class="sales__block">
-                        <img src="@/assets/img/sales1.png" alt="">
+                        <img src="@/assets/img/sales1.png" alt="" loading="lazy">
                         <h2>Курсы визажиста «Make-up с нуля»</h2>
                         <p>Погрузись в мир красоты с курсом от профессионалов</p>
 
@@ -331,7 +333,7 @@
                     </div>
 
                     <div class="sales__block">
-                        <img src="@/assets/img/sales2.png" alt="">
+                        <img src="@/assets/img/sales2.png" alt="" loading="lazy">
                         <h2>«Сам себе кондитер»</h2>
                         <p>Начни зарабатывать, продавая домашнюю выпечку</p>
 
@@ -357,7 +359,7 @@
                     </div>
 
                     <div class="sales__block">
-                        <img src="@/assets/img/sales3.png" alt="">
+                        <img src="@/assets/img/sales3.png" alt="" loading="lazy">
                         <h2>Современная профессия «Старт в smm»</h2>
                         <p>Комфортные условия для работы из дома</p>
 
@@ -383,7 +385,7 @@
                     </div>
 
                     <div class="sales__block">
-                        <img src="@/assets/img/sales4.png" alt="">
+                        <img src="@/assets/img/sales4.png" alt="" loading="lazy">
                         <h2>«Гуру массажа»</h2>
                         <p>Экспертный курс для безопасного массажа</p>
 
@@ -409,7 +411,7 @@
                     </div>
 
                     <div class="sales__block">
-                        <img src="@/assets/img/sales5.png" alt="">
+                        <img src="@/assets/img/sales5.png" alt="" loading="lazy">
                         <h2>Курсы «Иллюстратор будущего»</h2>
                         <p>Рисунки на бумаге и графическом планшете</p>
 
@@ -447,7 +449,7 @@
                 <div class="text-center">
                     <h1>Попробуйте <span>StudyNow</span></h1>
 
-                    <NuxtLink to="/">Подробнее о платформе</NuxtLink>
+                    <NuxtLink to="/about">Подробнее о платформе</NuxtLink>
                 </div>
             </div>
 
@@ -507,7 +509,7 @@
 
                     </swiper>
 
-                    <img src="@/assets/img/next.svg" class="next" alt="">
+                    <img src="@/assets/img/next.svg" class="next" alt="" loading="lazy">
                 </div>
             </div>
         </div>

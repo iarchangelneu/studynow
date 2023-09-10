@@ -1,17 +1,17 @@
 <template>
-    <footer>
+    <footer v-if="!hideFooterOnPages.includes($route.name)">
         <div class="links">
             <div>
-                <NuxtLink to="/">О платформе</NuxtLink>
-                <NuxtLink to="/">Пользовательское соглашение</NuxtLink>
+                <NuxtLink to="/about">О платформе</NuxtLink>
+                <NuxtLink to="/terms">Пользовательское соглашение</NuxtLink>
             </div>
             <div>
-                <NuxtLink to="/">Для продавца</NuxtLink>
-                <NuxtLink to="/">Политика конфиденциальности</NuxtLink>
+                <NuxtLink to="/for-seller">Для продавца</NuxtLink>
+                <NuxtLink to="/polytics">Политика конфиденциальности</NuxtLink>
             </div>
         </div>
 
-        <img src="@/assets/img/footerlogo.svg" alt="">
+        <NuxtLink to='/'><img src="@/assets/img/footerlogo.svg" alt="" loading="lazy"></NuxtLink>
 
 
         <small>
@@ -20,6 +20,15 @@
         </small>
     </footer>
 </template>
+<script>
+export default {
+    data() {
+        return {
+            hideFooterOnPages: ['login', 'register'],
+        }
+    }
+}
+</script>
 <style lang="scss" scoped>
 footer {
     padding: 0 110px 80px;

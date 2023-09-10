@@ -1,13 +1,20 @@
 <template>
-    <header>
+    <header v-if="!hideHeaderOnPages.includes($route.name)">
         <div class="pcheader">
             <div class="crap">
-                <img src="@/assets/img/headerlogo.svg" alt="">
+                <NuxtLink to="/">
+                    <img src="@/assets/img/headerlogo.svg" alt="" loading="lazy">
+                </NuxtLink>
 
                 <div class="headermen">
-                    <img src="@/assets/img/cart.svg" alt="">
-                    <img src="@/assets/img/cash.svg" alt="">
-                    <img src="@/assets/img/acc.svg" alt="">
+                    <img src="@/assets/img/cart.svg" alt="" loading="lazy" @click="cartOpen = !cartOpen"
+                        style="cursor: pointer;">
+                    <NuxtLink to="/refill">
+                        <img src="@/assets/img/cash.svg" alt="" loading="lazy">
+                    </NuxtLink>
+                    <NuxtLink to="/seller-account">
+                        <img src="@/assets/img/acc.svg" alt="" loading="lazy">
+                    </NuxtLink>
 
                     <div class="burg">
                         <input id="menu__toggle" class="d-none" type="checkbox" />
@@ -21,32 +28,164 @@
             <div class="headermenu" :class="{ open: menuOpen }">
                 <div class="menu__body">
                     <div>
-                        <NuxtLink to="/">Каталог</NuxtLink>
-                        <NuxtLink to="/">Акции и скидки</NuxtLink>
-                        <NuxtLink to="/">Популярное</NuxtLink>
-                        <NuxtLink to="/">О платформе</NuxtLink>
-                        <NuxtLink to="/">Для продавца</NuxtLink>
+                        <NuxtLink to="/catalog">Каталог</NuxtLink>
+                        <a href="/#sales">Акции и скидки</a>
+                        <a href="/#popular">Популярное</a>
+                        <NuxtLink to="/about">О платформе</NuxtLink>
+                        <NuxtLink to="/for-seller">Для продавца</NuxtLink>
                     </div>
                     <div>
-                        <NuxtLink to="/">Пользовательское соглашение</NuxtLink>
-                        <NuxtLink to="/">Политика конфиденциальности</NuxtLink>
+                        <NuxtLink to="/terms">Пользовательское соглашение</NuxtLink>
+                        <NuxtLink to="/polytics">Политика конфиденциальности</NuxtLink>
                     </div>
-                    <NuxtLink to="/" class="reg">Вход/Регистрация</NuxtLink>
+                    <NuxtLink to="/login" class="reg">Вход/Регистрация</NuxtLink>
                 </div>
             </div>
         </div>
     </header>
+
+    <div class="cart" :class="{ cartOpen: cartOpen }">
+        <div class="d-flex align-items-center justify-content-between">
+            <h2>Корзина</h2>
+            <img src="@/assets/img/closecart.svg" @click="cartOpen = !cartOpen" alt="" loading="lazy"
+                style="cursor: pointer;">
+        </div>
+
+        <div class="cart__body">
+            <div class="cart__item">
+                <img src="@/assets/img/cart.png" alt="" loading="lazy">
+                <h3>Блюда высокой кухни со всех стран</h3>
+
+                <div>
+                    <img src="@/assets/img/trash.svg" alt="" loading="lazy" style="cursor: pointer;">
+
+                    <small>11 540 ₸</small>
+                </div>
+            </div>
+            <div class="cart__item">
+                <img src="@/assets/img/cart.png" alt="" loading="lazy">
+                <h3>Блюда высокой кухни со всех стран</h3>
+
+                <div>
+                    <img src="@/assets/img/trash.svg" alt="" loading="lazy" style="cursor: pointer;">
+
+                    <small>11 540 ₸</small>
+                </div>
+            </div>
+
+            <div class="text-center">
+                <NuxtLink to="/complete-buy">Перейти к оформлению</NuxtLink>
+            </div>
+        </div>
+    </div>
 </template>
 <script>
 export default {
     data() {
         return {
             menuOpen: false,
+            cartOpen: false,
+            hideHeaderOnPages: ['login', 'register'],
         }
     }
 }
 </script>
 <style lang="scss" scoped>
+.cartOpen {
+    transform: scaleY(1) !important;
+    opacity: 1 !important;
+}
+
+.cart {
+    padding: 60px;
+    background: #FFF;
+
+    position: fixed;
+    width: 30%;
+    z-index: 200;
+    right: 0;
+    height: 100vh;
+    transition: all .3s ease;
+    transform: scaleY(0);
+    opacity: 0;
+
+    .cart__body {
+        margin-top: 75px;
+
+        a {
+            margin-top: 40px;
+            display: inline-block;
+            text-decoration: none;
+            text-align: center;
+            padding: 12px 57px;
+            border-radius: 10px;
+            background: #000;
+
+            font-size: 20px;
+            font-style: normal;
+            font-weight: 500;
+            line-height: 130%;
+            font-family: var(--int);
+            color: #fff;
+
+            &:hover {
+                background: linear-gradient(90deg, #462885 0.64%, #A021A7 100%);
+            }
+        }
+
+        .cart__item {
+            display: flex;
+            margin-bottom: 20px;
+
+            img {
+                max-width: 176px;
+                max-height: 122px;
+            }
+
+            &:last-child {
+                margin-bottom: 0;
+            }
+
+            h3 {
+                font-size: 14px;
+                font-style: normal;
+                font-weight: 500;
+                line-height: 130%;
+                font-family: var(--int);
+                color: #000;
+                margin-left: 10px;
+                margin-bottom: 0;
+            }
+
+            div {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 35px;
+
+                small {
+                    font-size: 20px;
+                    font-style: normal;
+                    font-weight: 400;
+                    line-height: normal;
+                    font-family: var(--int);
+                    color: #000;
+                    white-space: nowrap;
+                }
+            }
+        }
+    }
+
+    h2 {
+        font-size: 40px;
+        font-style: normal;
+        font-weight: 500;
+        line-height: normal;
+        font-family: var(--int);
+        color: #000;
+    }
+}
+
 header {
     z-index: 150;
     display: flex;

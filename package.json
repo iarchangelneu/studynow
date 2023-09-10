@@ -13,6 +13,7 @@
     "nuxt": "^3.7.1"
   },
   "dependencies": {
+    "@nuxt/image": "^1.0.0-rc.1",
     "axios": "^1.5.0",
     "sass": "^1.66.1",
     "swiper": "^10.2.0"
