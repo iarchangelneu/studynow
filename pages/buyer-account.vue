@@ -36,7 +36,7 @@
             <div class="products__body">
                 <div class="products__item" v-for="(item, i) in buys" :key="item.id">
                     <small>{{ i + 1 }}.</small>
-                    <img src="@/assets/img/myproduct.png" alt="" loading="lazy">
+                    <img :src="item.products.add_image[0].image" class="bigimg" alt="" loading="lazy">
 
                     <div class="product__full">
                         <div>
@@ -225,6 +225,20 @@ useSeoMeta({
 })
 </script>
 <style lang="scss" scoped>
+.bigimg {
+
+    width: 470px;
+    height: 308px;
+    border-radius: 10px;
+    object-fit: cover;
+
+    @media (max-width: 1024px) {
+        width: 100%;
+        height: auto;
+    }
+
+}
+
 .account {
     padding: 125px 110px 72px;
 
@@ -409,15 +423,7 @@ useSeoMeta({
                     margin-bottom: 0;
                 }
 
-                img {
-                    width: 470px;
-                    height: 308px;
 
-                    @media (max-width: 1024px) {
-                        width: 100%;
-                        height: auto;
-                    }
-                }
 
                 .product__full {
                     margin-left: 60px;

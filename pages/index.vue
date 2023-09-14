@@ -43,7 +43,7 @@
                 <div class="sales__body">
 
                     <div class="sales__block" v-for="item in discounts" :key="item.id">
-                        <img :src="pathUrl + '/api' + item.add_image[0]" />
+                        <img :src="pathUrl + '/api' + item.add_image[0]" class="productimg" />
                         <h2>{{ item.name }}</h2>
                         <p>{{ item.short_description }}</p>
 
@@ -191,7 +191,7 @@
                 <div class="sales__body">
 
                     <div class="sales__block" v-for="item in populars" :key="item.id">
-                        <img :src="pathUrl + '/api' + item.add_image[0]" />
+                        <img :src="pathUrl + '/api' + item.add_image[0]" class="productimg" />
                         <h2>{{ item.name }}</h2>
                         <p>{{ item.short_description }}</p>
 
@@ -436,6 +436,17 @@ useSeoMeta({
 })
 </script>
 <style lang="scss" scoped>
+.productimg {
+    height: 174px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+
+    @media (max-width: 1024px) {
+        height: 230px;
+    }
+}
+
 .page {
     padding: 53px 110px 110px;
 
@@ -708,7 +719,6 @@ useSeoMeta({
                     width: 100%;
                     padding: 10px;
                 }
-
 
 
                 h2 {

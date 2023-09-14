@@ -47,7 +47,7 @@
                 <div class="products__item" v-for="(product, i) in products" :key="product.id">
                     <small>{{ i + 1 }}.</small>
                     <img v-if="product.add_image && product.add_image.length > 0"
-                        :src="pathUrl + '/api' + product.add_image[0].image" alt="" loading="lazy">
+                        :src="pathUrl + '/api' + product.add_image[0].image" alt="" class="bigimg" loading="lazy">
                     <div class="product__full">
                         <div>
                             <h1>{{ product.name }}</h1>
@@ -70,21 +70,25 @@
             <div class="products__body">
                 <div class="products__item" v-for="(item, i) in sales" :key="item.id">
                     <small>{{ i + 1 }}.</small>
-                    <img src="@/assets/img/myproduct.png" alt="" loading="lazy">
+                    <img v-if="item.products.add_image && item.products.add_image.length > 0"
+                        :src="pathUrl + '/api' + item.products.add_image[0].image" alt="" class="bigimg" loading="lazy">
 
                     <div class="product__full">
                         <div>
-                            <h1>Курс «Блюда высокой кухни со всех стран»</h1>
-                            <small>11 540 ₸</small>
+                            <h1>{{ item.products.name }}</h1>
+                            <small>{{ item.products.price == 0 ? 'Бесплатно' : (Math.floor(item.products.price -
+                                ((item.products.price *
+                                    item.products.discount) / 100))).toLocaleString() + ' ₸' }}</small>
                         </div>
 
                         <div>
-                            <span>Дата продажи: 01.08.23</span>
+                            <span>Дата продажи: {{ formatDate(item.date) }}</span>
                         </div>
 
                         <div class="buttons">
-                            <button>Чат с покупателем</button>
-                            <button>Страница товара</button>
+                            <button @click="createChat(item.buyer.id, item.buyer.user.first_name)">Чат с
+                                покупателем</button>
+                            <NuxtLink :to="'/product/' + item.products.id">Страница товара</NuxtLink>
                         </div>
                     </div>
 
@@ -180,6 +184,8 @@ export default {
             chatId: null,
             transactions: [],
             chats: [],
+            sales: [],
+            myId: null,
         }
     },
     computed: {
@@ -194,6 +200,33 @@ export default {
         },
     },
     methods: {
+        openChat(chatId, chatName) {
+            this.activeTab = 7;
+            this.chatId = chatId;
+            this.chatName = chatName
+        },
+        createChat(id, name) {
+            const token = this.getAuthorizationCookie()
+            const csrf = this.getCSRFToken()
+            const path = `${this.pathUrl}/api/messanger/new-chat`
+            axios.defaults.headers.common['Authorization'] = `Token ${token}`;
+            axios.defaults.headers.common['X-CSRFToken'] = csrf;
+            axios
+                .post(path, {
+                    buyer: id,
+                    seller: this.myId,
+                })
+                .then(response => {
+                    const chatId = response.data.chat_id
+                    this.openChat(chatId, name)
+                })
+                .catch(error => console.log(error))
+        },
+        formatDate(dateString) {
+            const date = new Date(dateString);
+            const formattedDate = `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`;
+            return formattedDate;
+        },
         openChat(chatId, chatName) {
             this.activeTab = 7;
             this.chatId = chatId;
@@ -249,9 +282,10 @@ export default {
                     this.email = response.data.user.email
                     this.description = response.data.description
                     this.photo = this.pathUrl + '/api' + response.data.photo
-                    // this.sales = response.data.my_sales
+                    this.sales = response.data.my_sales
                     this.products = response.data.products
                     this.transactions = response.data.transactions
+                    this.myId = response.data.id
 
                 })
                 .catch(error => console.log(error));
@@ -322,6 +356,20 @@ useSeoMeta({
 })
 </script>
 <style lang="scss" scoped>
+.bigimg {
+
+    width: 470px;
+    height: 308px;
+    border-radius: 10px;
+    object-fit: cover;
+
+    @media (max-width: 1024px) {
+        width: 100%;
+        height: auto;
+    }
+
+}
+
 .account {
     padding: 125px 110px 72px;
 
@@ -646,15 +694,6 @@ useSeoMeta({
                     }
                 }
 
-                img {
-                    width: 470px;
-                    height: 308px;
-
-                    @media (max-width: 1024px) {
-                        width: 100%;
-                        height: auto;
-                    }
-                }
 
                 .product__full {
                     margin-left: 60px;
@@ -681,6 +720,12 @@ useSeoMeta({
                             // flex: 1;
                             padding: 10px 30px;
                             text-align: center;
+
+                            @media (max-width: 1024px) {
+
+                                flex: 1;
+                                padding: 10px 0;
+                            }
                         }
 
 

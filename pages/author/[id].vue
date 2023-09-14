@@ -22,7 +22,7 @@
 
             <div class="author__items">
                 <div class="author__item" v-for="item in products" :key="item.id">
-                    <img :src="item.add_image[0].image" />
+                    <img :src="item.add_image[0].image" class="productimg" />
                     <h2>{{ item.name }}</h2>
                     <p>{{ item.short_description }}</p>
 
@@ -116,6 +116,7 @@ export default {
 }
 </script >
 <script setup>
+
 useSeoMeta({
     title: 'Страница автора | Studynow',
     ogTitle: 'Страница автора | Studynow',
@@ -124,6 +125,17 @@ useSeoMeta({
 })
 </script>
 <style lang="scss" scoped>
+.productimg {
+    height: 174px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+
+    @media (max-width: 1024px) {
+        height: 230px;
+    }
+}
+
 .author {
     padding: 120px 110px 110px;
 

@@ -73,7 +73,7 @@
         <div v-if="catalog.length <= 0"></div>
         <div class="catalog__body" v-else>
             <div class="catalog__item" v-for="item in catalog.results" :key="item.id">
-                <img :src="pathUrl + '/api' + item.add_image[0]" />
+                <img :src="pathUrl + '/api' + item.add_image[0]" class="productimg" />
                 <h2>{{ item.name }}</h2>
                 <p>{{ item.short_description }}</p>
 
@@ -275,6 +275,17 @@ useSeoMeta({
 })
 </script>
 <style lang="scss" scoped>
+.productimg {
+    height: 174px;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+
+    @media (max-width: 1024px) {
+        height: 230px;
+    }
+}
+
 .catalog {
     padding: 125px 110px 90px;
 

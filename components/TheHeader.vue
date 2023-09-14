@@ -56,7 +56,7 @@
         <div class="cart__body">
             <div class="cart__items">
                 <div class="cart__item" v-for="item in cart" :key="item.id">
-                    <img :src="pathUrl + '/api' + item.products.add_image[0].image" alt="" loading="lazy">
+                    <img :src="pathUrl + '/api' + item.products.add_image[0].image" class="cartimg" alt="" loading="lazy">
                     <h3>{{ item.products.name }}</h3>
 
                     <div class="w-100">
@@ -173,6 +173,21 @@ export default {
 }
 </script>
 <style lang="scss" scoped>
+.cartimg {
+
+    width: 176px;
+    min-width: 176px;
+    height: 122px;
+    object-fit: cover;
+    border-radius: 10px;
+
+    @media (max-width: 1024px) {
+        width: 120px !important;
+        min-width: 120px;
+    }
+
+}
+
 .cartOpen {
     transform: scaleY(1) !important;
     opacity: 1 !important;
@@ -252,14 +267,7 @@ export default {
                 justify-content: space-between;
             }
 
-            img {
-                max-width: 176px;
-                max-height: 122px;
 
-                @media (max-width: 1024px) {
-                    max-width: 120px;
-                }
-            }
 
             &:last-child {
                 margin-bottom: 0;

@@ -7,7 +7,7 @@
         <div class="complete__body">
             <div class="cart">
                 <div class="cart__item" v-for="item in cart" :key="item.id">
-                    <img :src="pathUrl + '/api' + item.products.add_image[0].image" alt="" loading="lazy">
+                    <img :src="pathUrl + '/api' + item.products.add_image[0].image" class="cartimg" alt="" loading="lazy">
 
                     <div>
                         <h2>{{ item.products.name }}</h2>
@@ -144,6 +144,18 @@ useSeoMeta({
 })
 </script>
 <style lang="scss" scoped>
+.cartimg {
+    min-width: 220px;
+    height: 144px;
+    object-fit: cover;
+    border-radius: 10px;
+
+    @media (max-width: 1024px) {
+        width: 100%;
+        height: 230px;
+    }
+}
+
 .complete {
     padding: 120px 110px 150px;
 
@@ -279,15 +291,7 @@ useSeoMeta({
                 gap: 20px;
             }
 
-            img {
-                max-width: 220px;
-                max-height: 144px;
 
-                @media (max-width: 1024px) {
-                    max-width: 100%;
-                    height: auto;
-                }
-            }
 
             .price {
                 @media (max-width: 1024px) {
