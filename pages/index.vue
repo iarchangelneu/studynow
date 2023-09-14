@@ -1,38 +1,32 @@
 <template>
     <section>
-        <div class="main">
+        <div class="mainbig">
+            <div class="main">
 
-            <div class="main__body">
-                <h1>StudyNow.</h1>
-                <h2>Платформа для твоего развития</h2>
 
-                <div class="searchbody">
-                    <div class="input-group">
+                <div class="main__body">
+                    <h1>StudyNow.</h1>
+                    <h2>Платформа для твоего развития</h2>
 
-                        <input type="text" class="form-control" placeholder="Поиск курса" aria-label="Username"
-                            aria-describedby="basic-addon1" v-model="search" v-on:keyup.enter="redirectToCatalog">
+                    <div class="searchbody">
+                        <div class="input-group">
 
-                        <div class="input-group-prepend">
-                            <NuxtLink :to="'/catalog?search=' + search">
-                                <span class="input-group-text" id="basic-addon1"><img src="@/assets/img/search.svg" alt=""
-                                        loading="lazy"></span>
-                            </NuxtLink>
+                            <input type="text" class="form-control" placeholder="Поиск курса" aria-label="Username"
+                                aria-describedby="basic-addon1" v-model="search" v-on:keyup.enter="redirectToCatalog">
+
+                            <div class="input-group-prepend">
+                                <NuxtLink :to="'/catalog?search=' + search">
+                                    <span class="input-group-text" id="basic-addon1"><img src="@/assets/img/search.svg"
+                                            alt="" loading="lazy"></span>
+                                </NuxtLink>
+                            </div>
                         </div>
                     </div>
+
                 </div>
 
-                <a class="mouse d-block" href="#sales">
-                    <svg width="40" height="72" viewBox="0 0 40 72" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path
-                            d="M19.9997 46.9997V41.9997M19.9997 68.6663C13.5564 68.6663 8.33301 63.443 8.33301 56.9997V46.9997C8.33301 40.5564 13.5564 35.333 19.9997 35.333C26.443 35.333 31.6663 40.5564 31.6663 46.9997V56.9997C31.6663 63.443 26.443 68.6663 19.9997 68.6663Z"
-                            stroke="black" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" />
-                        <path d="M20 30L20 1" stroke="black" stroke-width="2" stroke-linecap="round" />
-                        <circle cx="20" cy="8" r="4" fill="black" />
-                    </svg>
 
-                </a>
             </div>
-
         </div>
 
         <div class="page">
@@ -436,6 +430,39 @@ useSeoMeta({
 })
 </script>
 <style lang="scss" scoped>
+.mouse {
+    margin-top: 100px;
+
+    @media (max-width: 1024px) {
+        display: none !important;
+    }
+
+
+    @keyframes scaleAnimation {
+        0% {
+            transform: scale(1);
+        }
+
+        50% {
+            transform: scale(1.2);
+            /* Увеличение до 1.2x исходного размера */
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+
+
+    svg {
+        cursor: pointer;
+        animation: scaleAnimation 2s infinite;
+        /* 3s - продолжительность анимации, infinite - бесконечное повторение */
+        transform-origin: center;
+        /* Центральная точка масштабирования */
+    }
+}
+
 .productimg {
     height: 174px;
     width: 100%;
@@ -1235,38 +1262,7 @@ section {
             }
         }
 
-        .mouse {
-            margin-top: 150px;
 
-            @media (max-width: 1024px) {
-                display: none !important;
-            }
-
-
-            @keyframes scaleAnimation {
-                0% {
-                    transform: scale(1);
-                }
-
-                50% {
-                    transform: scale(1.2);
-                    /* Увеличение до 1.2x исходного размера */
-                }
-
-                100% {
-                    transform: scale(1);
-                }
-            }
-
-
-            svg {
-                cursor: pointer;
-                animation: scaleAnimation 2s infinite;
-                /* 3s - продолжительность анимации, infinite - бесконечное повторение */
-                transform-origin: center;
-                /* Центральная точка масштабирования */
-            }
-        }
 
         .searchbody {
             border-radius: 15px;

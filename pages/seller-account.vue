@@ -135,10 +135,10 @@
                         <input class="w-100" type="email" placeholder="E-mail" v-model="email">
                     </div>
 
-                    <div class="data">
+                    <!-- <div class="data">
                         <label for="name">Пароль</label>
                         <input class="w-100" type="password" placeholder="Пароль">
-                    </div>
+                    </div> -->
 
                 </div>
                 <div class="profile__right w-100">
@@ -469,7 +469,7 @@ useSeoMeta({
 
 
         .profile__left {
-            width: 100%;
+            //   width: 100%;
 
             .data {
                 margin-top: 20px;
