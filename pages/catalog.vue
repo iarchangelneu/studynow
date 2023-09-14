@@ -158,8 +158,14 @@ export default {
         getCatalog() {
             const queryParams = new URLSearchParams(window.location.search);
             const categoryParam = queryParams.get('category');
+            const searchParam = queryParams.get('search');
+
+
 
             let url = `${this.pathUrl}/api/products/all-product`;
+            if (searchParam) {
+                url += `?name__icontains=${searchParam}`;
+            }
             if (categoryParam) {
                 url += `?category__in=${categoryParam}`;
             }

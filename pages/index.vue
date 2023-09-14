@@ -10,11 +10,13 @@
                     <div class="input-group">
 
                         <input type="text" class="form-control" placeholder="Поиск курса" aria-label="Username"
-                            aria-describedby="basic-addon1">
+                            aria-describedby="basic-addon1" v-model="search" v-on:keyup.enter="redirectToCatalog">
 
                         <div class="input-group-prepend">
-                            <span class="input-group-text" id="basic-addon1"><img src="@/assets/img/search.svg" alt=""
-                                    loading="lazy"></span>
+                            <NuxtLink :to="'/catalog?search=' + search">
+                                <span class="input-group-text" id="basic-addon1"><img src="@/assets/img/search.svg" alt=""
+                                        loading="lazy"></span>
+                            </NuxtLink>
                         </div>
                     </div>
                 </div>
@@ -40,152 +42,34 @@
 
                 <div class="sales__body">
 
-                    <div class="sales__block">
-                        <img src="@/assets/img/sales1.png" alt="" loading="lazy">
-                        <h2>Курсы визажиста «Make-up с нуля»</h2>
-                        <p>Погрузись в мир красоты с курсом от профессионалов</p>
+                    <div class="sales__block" v-for="item in discounts" :key="item.id">
+                        <img :src="pathUrl + '/api' + item.add_image[0]" />
+                        <h2>{{ item.name }}</h2>
+                        <p>{{ item.short_description }}</p>
 
-                        <ul class="dot-list">
-                            <li>10 видеоуроков</li>
-                            <li>3 эксперта</li>
-                            <li>Быстрая обратная связь с разбором ошибок</li>
+                        <ul class="dot-list" v-if="item.key_features">
+                            <li v-for="(feature, index) in item.key_features.split('\r\n').slice(0, 3)" :key="index">{{
+                                feature }}
+                            </li>
                         </ul>
 
                         <div class="price">
-                            <span>
-                                15 000 ₸
+                            <span v-if="item.discount > 0">
+                                {{ item.price.toLocaleString() + ' ₸' }}
                                 <img src="@/assets/img/disc.svg" alt="" loading="lazy">
                             </span>
-                            <h3>13 000 ₸</h3>
-                            <div></div>
+                            <h3 v-if="item.discount > 0">
+                                {{ (Math.floor(item.price - ((item.price * item.discount) / 100))).toLocaleString() + ' ₸'
+                                }}</h3>
+                            <h3 v-else>{{ item.price == 0 ? 'Бесплатно' : item.price.toLocaleString() + ' ₸' }}</h3>
                         </div>
 
                         <div class="buttons">
-                            <NuxtLink to="/">
+                            <NuxtLink :to="'/product/' + item.id" ref="buy">
                                 Подробнее
                             </NuxtLink>
-                            <NuxtLink to="/">
-                                Купить
-                            </NuxtLink>
-                        </div>
-                    </div>
-
-                    <div class="sales__block">
-                        <img src="@/assets/img/sales2.png" alt="" loading="lazy">
-                        <h2>«Сам себе кондитер»</h2>
-                        <p>Начни зарабатывать, продавая домашнюю выпечку</p>
-
-                        <ul class="dot-list">
-                            <li>6 видеоуроков</li>
-                            <li>Чек-лист для старта</li>
-                            <li>Табличка с главными аллергенами</li>
-                        </ul>
-
-                        <div class="price">
-                            <span>
-                                20 000 ₸
-                                <img src="@/assets/img/disc.svg" alt="" loading="lazy">
-                            </span>
-                            <h3>15 000 ₸</h3>
-                            <div></div>
-                        </div>
-
-                        <div class="buttons">
-                            <NuxtLink to="/">
-                                Подробнее
-                            </NuxtLink>
-                            <NuxtLink to="/">
-                                Купить
-                            </NuxtLink>
-                        </div>
-                    </div>
-
-                    <div class="sales__block">
-                        <img src="@/assets/img/sales3.png" alt="" loading="lazy">
-                        <h2>Современная профессия «Старт в smm»</h2>
-                        <p>Комфортные условия для работы из дома</p>
-
-                        <ul class="dot-list">
-                            <li>16 лекций</li>
-                            <li>Разбор работ</li>
-                            <li>Список компаний для трудоустройства</li>
-                        </ul>
-
-                        <div class="price">
-                            <span>
-                                60 000 ₸
-                                <img src="@/assets/img/disc.svg" alt="" loading="lazy">
-                            </span>
-                            <h3>44 900 ₸</h3>
-                            <div></div>
-                        </div>
-
-                        <div class="buttons">
-                            <NuxtLink to="/">
-                                Подробнее
-                            </NuxtLink>
-                            <NuxtLink to="/">
-                                Купить
-                            </NuxtLink>
-                        </div>
-                    </div>
-
-                    <div class="sales__block">
-                        <img src="@/assets/img/sales4.png" alt="" loading="lazy">
-                        <h2>«Гуру массажа»</h2>
-                        <p>Экспертный курс для безопасного массажа</p>
-
-                        <ul class="dot-list">
-                            <li>9 видеоуроков</li>
-                            <li>Схема с точками массажа</li>
-                            <li>Лекции от медицинских работников</li>
-                        </ul>
-
-                        <div class="price">
-                            <span>
-                                14 000 ₸
-                                <img src="@/assets/img/disc.svg" alt="" loading="lazy">
-                            </span>
-                            <h3>11 000 ₸</h3>
-                            <div></div>
-                        </div>
-
-                        <div class="buttons">
-                            <NuxtLink to="/">
-                                Подробнее
-                            </NuxtLink>
-                            <NuxtLink to="/">
-                                Купить
-                            </NuxtLink>
-                        </div>
-                    </div>
-
-                    <div class="sales__block">
-                        <img src="@/assets/img/sales5.png" alt="" loading="lazy">
-                        <h2>Курсы «Иллюстратор будущего»</h2>
-                        <p>Рисунки на бумаге и графическом планшете</p>
-
-                        <ul class="dot-list">
-                            <li>15 видеоуроков</li>
-                            <li>Разбор постоения рисунка</li>
-                            <li>Книга по теории цвета</li>
-                        </ul>
-
-                        <div class="price">
-                            <span>
-                                37 000 ₸
-                                <img src="@/assets/img/disc.svg" alt="" loading="lazy">
-                            </span>
-                            <h3>27 000 ₸</h3>
-                            <div></div>
-                        </div>
-
-                        <div class="buttons">
-                            <NuxtLink to="/">
-                                Подробнее
-                            </NuxtLink>
-                            <NuxtLink to="/">
-                                Купить
+                            <NuxtLink ref="buy" @click="addToCart(item.id)" style="cursor: pointer;">
+                                {{ item.addToCartStatus || 'Купить' }}
                             </NuxtLink>
                         </div>
                     </div>
@@ -202,38 +86,38 @@
 
                 <div class="category__block">
                     <div>
-                        <NuxtLink to="/">
+                        <NuxtLink to="/catalog?category=1">
                             <span> IT</span>
                             <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
-                        <NuxtLink to="/">
+                        <NuxtLink to="/catalog?category=2">
                             <span> Красота и здоровье</span>
                             <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
-                        <NuxtLink to="/">
+                        <NuxtLink to="/catalog?category=3">
                             <span>Творчество и хобби</span>
                             <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
-                        <NuxtLink to="/">
+                        <NuxtLink to="/catalog?category=4">
                             <span> Психология</span>
                             <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
 
                     </div>
                     <div>
-                        <NuxtLink to="/">
+                        <NuxtLink to="/catalog?category=5">
                             <span> Духовное развитие</span>
                             <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
-                        <NuxtLink to="/">
+                        <NuxtLink to="/catalog?category=6">
                             <span> Дети</span>
                             <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
-                        <NuxtLink to="/">
+                        <NuxtLink to="/catalog?category=7">
                             <span>Маркетинг</span>
                             <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
-                        <NuxtLink to="/">
+                        <NuxtLink to="/catalog?category=8">
                             <span>Финансы</span>
                             <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
@@ -241,19 +125,19 @@
                     </div>
 
                     <div>
-                        <NuxtLink to="/">
+                        <NuxtLink to="/catalog?category=9">
                             <span> Радиотехника</span>
                             <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
-                        <NuxtLink to="/">
+                        <NuxtLink to="/catalog?category=10">
                             <span> Бесплатные курсы</span>
                             <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
-                        <NuxtLink to="/">
+                        <NuxtLink to="/catalog?category=11">
                             <span>Приготовление пищи</span>
                             <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
-                        <NuxtLink to="/">
+                        <NuxtLink to="/catalog?category=12">
                             <span>Съёмка</span>
                             <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
@@ -261,17 +145,17 @@
                     </div>
 
                     <div>
-                        <NuxtLink to="/">
+                        <NuxtLink to="/catalog?category=13">
                             <span> Языки</span>
                             <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
 
-                        <NuxtLink to="/">
+                        <NuxtLink to="/catalog?category=14">
                             <span>Бизнес</span>
                             <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
 
-                        <NuxtLink to="/">
+                        <NuxtLink to="/catalog?category=15">
                             <span>Спорт</span>
                             <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
@@ -279,17 +163,17 @@
                     </div>
 
                     <div>
-                        <NuxtLink to="/">
+                        <NuxtLink to="/catalog?category=16">
                             <span> Разработка игр</span>
                             <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
 
-                        <NuxtLink to="/">
+                        <NuxtLink to="/catalog?category=17">
                             <span>Продажи</span>
                             <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
 
-                        <NuxtLink to="/">
+                        <NuxtLink to="/catalog?category=18">
                             <span>Мода</span>
                             <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
                         </NuxtLink>
@@ -306,131 +190,34 @@
 
                 <div class="sales__body">
 
-                    <div class="sales__block">
-                        <img src="@/assets/img/sales1.png" alt="" loading="lazy">
-                        <h2>Курсы визажиста «Make-up с нуля»</h2>
-                        <p>Погрузись в мир красоты с курсом от профессионалов</p>
+                    <div class="sales__block" v-for="item in populars" :key="item.id">
+                        <img :src="pathUrl + '/api' + item.add_image[0]" />
+                        <h2>{{ item.name }}</h2>
+                        <p>{{ item.short_description }}</p>
 
-                        <ul class="dot-list">
-                            <li>10 видеоуроков</li>
-                            <li>3 эксперта</li>
-                            <li>Быстрая обратная связь с разбором ошибок</li>
+                        <ul class="dot-list" v-if="item.key_features">
+                            <li v-for="(feature, index) in item.key_features.split('\r\n').slice(0, 3)" :key="index">{{
+                                feature }}
+                            </li>
                         </ul>
 
                         <div class="price">
-
-                            <h3>13 000 ₸</h3>
+                            <span v-if="item.discount > 0">
+                                {{ item.price.toLocaleString() + ' ₸' }}
+                                <img src="@/assets/img/disc.svg" alt="" loading="lazy">
+                            </span>
+                            <h3 v-if="item.discount > 0">
+                                {{ (Math.floor(item.price - ((item.price * item.discount) / 100))).toLocaleString() + ' ₸'
+                                }}</h3>
+                            <h3 v-else>{{ item.price == 0 ? 'Бесплатно' : item.price.toLocaleString() + ' ₸' }}</h3>
                         </div>
 
                         <div class="buttons">
-                            <NuxtLink to="/">
+                            <NuxtLink :to="'/product/' + item.id" ref="buy">
                                 Подробнее
                             </NuxtLink>
-                            <NuxtLink to="/">
-                                Купить
-                            </NuxtLink>
-                        </div>
-                    </div>
-
-                    <div class="sales__block">
-                        <img src="@/assets/img/sales2.png" alt="" loading="lazy">
-                        <h2>«Сам себе кондитер»</h2>
-                        <p>Начни зарабатывать, продавая домашнюю выпечку</p>
-
-                        <ul class="dot-list">
-                            <li>6 видеоуроков</li>
-                            <li>Чек-лист для старта</li>
-                            <li>Табличка с главными аллергенами</li>
-                        </ul>
-
-                        <div class="price">
-
-                            <h3>15 000 ₸</h3>
-                        </div>
-
-                        <div class="buttons">
-                            <NuxtLink to="/">
-                                Подробнее
-                            </NuxtLink>
-                            <NuxtLink to="/">
-                                Купить
-                            </NuxtLink>
-                        </div>
-                    </div>
-
-                    <div class="sales__block">
-                        <img src="@/assets/img/sales3.png" alt="" loading="lazy">
-                        <h2>Современная профессия «Старт в smm»</h2>
-                        <p>Комфортные условия для работы из дома</p>
-
-                        <ul class="dot-list">
-                            <li>16 лекций</li>
-                            <li>Разбор работ</li>
-                            <li>Список компаний для трудоустройства</li>
-                        </ul>
-
-                        <div class="price">
-
-                            <h3>44 900 ₸</h3>
-                        </div>
-
-                        <div class="buttons">
-                            <NuxtLink to="/">
-                                Подробнее
-                            </NuxtLink>
-                            <NuxtLink to="/">
-                                Купить
-                            </NuxtLink>
-                        </div>
-                    </div>
-
-                    <div class="sales__block">
-                        <img src="@/assets/img/sales4.png" alt="" loading="lazy">
-                        <h2>«Гуру массажа»</h2>
-                        <p>Экспертный курс для безопасного массажа</p>
-
-                        <ul class="dot-list">
-                            <li>9 видеоуроков</li>
-                            <li>Схема с точками массажа</li>
-                            <li>Лекции от медицинских работников</li>
-                        </ul>
-
-                        <div class="price">
-
-                            <h3>11 000 ₸</h3>
-                        </div>
-
-                        <div class="buttons">
-                            <NuxtLink to="/">
-                                Подробнее
-                            </NuxtLink>
-                            <NuxtLink to="/">
-                                Купить
-                            </NuxtLink>
-                        </div>
-                    </div>
-
-                    <div class="sales__block">
-                        <img src="@/assets/img/sales5.png" alt="" loading="lazy">
-                        <h2>Курсы «Иллюстратор будущего»</h2>
-                        <p>Рисунки на бумаге и графическом планшете</p>
-
-                        <ul class="dot-list">
-                            <li>15 видеоуроков</li>
-                            <li>Разбор постоения рисунка</li>
-                            <li>Книга по теории цвета</li>
-                        </ul>
-
-                        <div class="price">
-                            <h3>27 000 ₸</h3>
-                        </div>
-
-                        <div class="buttons">
-                            <NuxtLink to="/">
-                                Подробнее
-                            </NuxtLink>
-                            <NuxtLink to="/">
-                                Купить
+                            <NuxtLink ref="buy" @click="addToCart2(item.id)" style="cursor: pointer;">
+                                {{ item.addToCartStatus || 'Купить' }}
                             </NuxtLink>
                         </div>
                     </div>
@@ -526,10 +313,14 @@ import { Swiper, SwiperSlide } from 'swiper/vue';
 
 // Import Swiper styles
 import 'swiper/css';
+import global from '~/mixins/global';
+import axios from 'axios';
 export default {
+    mixins: [global],
     components: {
         Swiper,
         SwiperSlide,
+
     },
     data() {
         return {
@@ -537,7 +328,8 @@ export default {
             modules: [Navigation],
             navigation: {
                 nextEl: '.next',
-                prevEl: '.prev'
+                prevEl: '.prev',
+                pathUrl: 'https://studynow.kz',
             },
             breakpoints: {
                 320: {
@@ -549,8 +341,89 @@ export default {
                     slidesPerView: 3,
                     spaceBetween: 30,
                 }
-            }
+            },
+            discounts: [],
+            populars: [],
+            addToCartStatus: '',
         }
+    },
+    methods: {
+        redirectToCatalog: function () {
+            // Переход на '/catalog?search=' + this.search
+            window.location.href = '/catalog?search=' + this.search;
+        },
+        addToCart(id) {
+            const path = `${this.pathUrl}/api/buyer/add-product-basket`
+            const csrf = this.getCSRFToken()
+            axios.defaults.headers.common['X-CSRFToken'] = csrf;
+            axios
+                .post(path, {
+                    products: id,
+                    amount: 1,
+                })
+                .then(response => {
+                    const index = this.discounts.findIndex(item => item.id === id);
+                    if (response.status == 201) {
+                        // Присвоение значения напрямую
+                        this.discounts[index].addToCartStatus = 'Добавлен';
+                    } else {
+                        this.discounts[index].addToCartStatus = 'Ошибка';
+                    }
+                    console.log(response)
+                })
+                .catch(error => {
+                    console.error(error)
+                })
+        },
+        addToCart2(id) {
+            const path = `${this.pathUrl}/api/buyer/add-product-basket`
+            const csrf = this.getCSRFToken()
+            axios.defaults.headers.common['X-CSRFToken'] = csrf;
+            axios
+                .post(path, {
+                    products: id,
+                    amount: 1,
+                })
+                .then(response => {
+                    const index = this.populars.findIndex(item => item.id === id);
+                    if (response.status == 201) {
+                        // Присвоение значения напрямую
+                        this.populars[index].addToCartStatus = 'Добавлен';
+                    } else {
+                        this.populars[index].addToCartStatus = 'Ошибка';
+                    }
+                    console.log(response)
+                })
+                .catch(error => {
+                    console.error(error)
+                })
+        },
+        getDiscount() {
+            const path = `${this.pathUrl}/api/products/discount-product?amount_products=5`;
+            axios
+                .get(path)
+                .then(response => {
+                    this.discounts = response.data
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        },
+        getPopular() {
+            const path = `${this.pathUrl}/api/products/popular-product?amount_products=5`;
+            axios
+                .get(path)
+                .then(response => {
+                    this.populars = response.data
+                })
+                .catch(error => {
+                    console.log(error)
+                })
+        },
+    },
+    mounted() {
+        this.getDiscount()
+        this.getPopular()
     }
 }
 </script>
