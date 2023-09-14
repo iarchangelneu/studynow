@@ -4,7 +4,7 @@
             <div class="course__left">
                 <div>
                     <label for="name">Название товара</label>
-                    <input type="text" id="name" name="name" placeholder="Введите название" v-model="name">
+                    <input type="text" id="name" name="name" placeholder="Введите название" ref="name" v-model="name">
                 </div>
                 <div>
                     <label for="name">Краткое описание</label>
@@ -14,7 +14,7 @@
                 <div class="select">
                     <div class="mb-0">
                         <label for="select">Выберите категорию</label>
-                        <select name="select" id="select" v-model="selectedCategory">
+                        <select name="select" id="select" v-model="selectedCategory" ref="select">
                             <option v-for="(category, index) in categories" :key="index" :value="category.id">{{
                                 category.name
                             }}</option>
@@ -29,7 +29,7 @@
                 <div class="discount">
                     <div>
                         <label for="name">Введите цену</label>
-                        <input type="number" id="name" name="name" placeholder="Цена за товар">
+                        <input type="number" id="name" name="name" placeholder="Цена за товар" v-model="price">
                     </div>
                     <div>
                         <label for="name">Скидка, %</label>
@@ -74,16 +74,21 @@
         </div>
 
         <div class="text-center">
-            <button>Опубликовать товар</button>
+            <button ref="createProduct" @click="submitForm">Опубликовать товар</button>
         </div>
     </div>
 </template>
 <script>
+import global from '~/mixins/global';
+import axios from 'axios';
 export default {
+    mixins: [global],
     data() {
         return {
             selectedCategory: null,
+            pathUrl: 'https://studynow.kz',
             discount: 0,
+            price: 0,
             name: '',
             shortDesc: '',
             description: '',
@@ -114,6 +119,57 @@ export default {
     },
 
     methods: {
+        async submitForm() {
+            const csrf = this.getCSRFToken()
+            if (this.name.length > 0) {
+                this.$refs.name.style.borderColor = '#000'
+
+                if (this.selectedCategory != null) {
+                    this.$refs.select.style.borderColor = '#000'
+                    const path = `${this.pathUrl}/api/seller/seller-lk/add-product/`
+                    const formData = new FormData();
+
+                    const filesToUpload = this.uploadedImages
+                        .filter(item => item.file instanceof File)
+                        .map(item => item.file);
+
+
+                    formData.append('name', this.name);
+                    formData.append('category', this.selectedCategory);
+                    formData.append('price', this.price);
+                    formData.append('discount', this.discount);
+                    formData.append('description', this.description);
+                    formData.append('key_features', this.courseFeaturesText);
+                    formData.append('short_description', this.shortDesc);
+                    filesToUpload.forEach(file => {
+                        formData.append('add_image', file);
+                    });
+                    this.$refs.createProduct.disabled = true
+                    this.$refs.createProduct.innerHTML = 'СОЗДАЕМ ЗАКАЗ'
+
+                    try {
+                        axios.defaults.headers.common['X-CSRFToken'] = csrf;
+                        axios.defaults.headers.post['Content-Type'] = 'multipart/form-data';
+                        const response = await axios.post(path, formData);
+                        console.log('Форма успешно отправлена', response);
+                        if (response.status == 201) {
+                            this.$refs.createProduct.innerHTML = 'Заказ успешно создан!'
+                        }
+                    } catch (error) {
+                        console.error('Ошибка при отправке формы', error);
+                        this.$refs.createProduct.disabled = false
+                        this.$refs.createProduct.innerHTML = 'Ошибка при создании заказа'
+                    }
+                }
+                else {
+                    this.$refs.select.style.borderColor = 'red'
+                }
+            }
+            else {
+                this.$refs.name.style.borderColor = 'red'
+            }
+
+        },
         handleKeyDown(event) {
             if (event.key === 'Backspace' && !this.courseFeaturesText) {
                 event.preventDefault(); // Предотвращаем удаление последней строки
@@ -226,6 +282,11 @@ useSeoMeta({
     gap: 20px;
     width: 100%;
 
+    @media (max-width: 1024px) {
+        flex-direction: column;
+        margin-top: 20px;
+    }
+
     label,
     input {
         display: block;
@@ -247,9 +308,19 @@ useSeoMeta({
         gap: 9px;
         margin-top: 20px;
 
+        .uploaded-image {
+            max-width: auto !important;
+            width: auto !important;
+        }
+
         img {
-            max-width: 259px;
-            max-height: 177px;
+            width: 259px;
+            height: 177px;
+
+            @media (max-width: 1024px) {
+                width: 165px;
+                height: 110px;
+            }
         }
     }
 
@@ -271,6 +342,11 @@ useSeoMeta({
 
     .course__left {
         max-width: 527px;
+
+        @media (max-width: 1024px) {
+            max-width: 100%;
+            width: 100%;
+        }
 
         .highlight {
             border: 2px dashed green !important;
@@ -313,6 +389,11 @@ useSeoMeta({
             margin-bottom: 20px;
             max-width: 527px;
 
+            @media (max-width: 1024px) {
+                max-width: 100%;
+                width: 100%;
+            }
+
             &:last-child {
                 margin-bottom: 0;
             }
@@ -321,14 +402,25 @@ useSeoMeta({
         .discount {
             display: flex;
             gap: 10px;
+
+            div {
+                flex: 1;
+            }
         }
 
         .select {
             display: flex;
             align-items: flex-end;
+            flex-wrap: wrap;
             gap: 10px;
 
+            @media (max-width: 1024px) {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
             span {
+                flex: 1;
                 padding: 11px 10px;
                 margin-top: 4px;
                 border: 2px solid #000;
@@ -336,6 +428,7 @@ useSeoMeta({
 
                 display: flex;
                 align-items: flex-start;
+                justify-content: space-between;
                 gap: 10px;
                 font-size: 16px;
                 font-style: normal;
@@ -343,6 +436,8 @@ useSeoMeta({
                 line-height: 130%;
                 font-family: var(--int);
                 color: #000;
+
+                @media (max-width: 1024px) {}
 
                 img {
                     cursor: pointer;

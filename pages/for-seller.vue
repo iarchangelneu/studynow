@@ -74,6 +74,20 @@ useSeoMeta({
 .about {
     padding: 125px 110px 110px;
 
+    @media (max-width: 1600px) {
+        padding: 125px 50px 110px;
+    }
+
+    @media (max-width: 1024px) {
+        padding: 125px 20px 50px;
+    }
+
+    .text-right {
+        @media (max-width: 1024px) {
+            text-align: center !important;
+        }
+    }
+
     h1 {
         font-size: 40px;
         font-style: normal;
@@ -82,17 +96,47 @@ useSeoMeta({
         font-family: var(--int);
         color: #000;
         margin-bottom: 30px;
+
+        @media (max-width: 1024px) {
+            font-size: 24px;
+            margin-bottom: 20px;
+        }
     }
 
     .about__block {
         display: flex;
         gap: 80px;
 
+        @media (max-width: 1024px) {
+            flex-direction: column-reverse;
+            gap: 20px;
+        }
+
         .about__right {
+            img {
+                max-width: 100%;
+
+                @media (max-width: 1024px) {
+                    width: 100%;
+                }
+            }
+
             div {
                 margin-top: 40px;
                 display: flex;
                 gap: 40px;
+
+                @media (max-width: 1024px) {
+                    margin-top: 20px;
+                }
+
+                img {
+                    max-width: 47.5%;
+
+                    @media (max-width: 1024px) {
+                        display: none;
+                    }
+                }
             }
         }
 
@@ -104,7 +148,7 @@ useSeoMeta({
                 border-radius: 10px;
                 background: #000;
                 display: inline-block;
-                margin-top: 0;
+                margin-top: 54px;
 
                 font-size: 16px;
                 font-style: normal;
@@ -115,6 +159,10 @@ useSeoMeta({
 
                 &:hover {
                     background: linear-gradient(90deg, #462885 0.64%, #A021A7 100%);
+                }
+
+                @media (max-width: 1024px) {
+                    margin-top: 20px;
                 }
             }
 
@@ -128,9 +176,16 @@ useSeoMeta({
                 line-height: 130%;
                 font-family: var(--int);
                 color: #000;
+
+                @media (max-width: 1024px) {
+                    max-width: 100%;
+                    font-size: 16px;
+                }
             }
 
-
+            li {
+                margin-bottom: 0;
+            }
 
             h2 {
                 font-size: 20px;
@@ -140,6 +195,10 @@ useSeoMeta({
                 font-family: var(--int);
                 color: #000;
                 margin-top: 20px;
+
+                @media (max-width: 1024px) {
+                    font-size: 16px;
+                }
             }
 
             ol {

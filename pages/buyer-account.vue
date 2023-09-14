@@ -10,96 +10,77 @@
             <div class="highlight" :style="{ width: tabWidth + 'px', transform: 'translateX(' + tabOffset + 'px)' }"></div>
         </div>
 
+        <div class="mobnav">
+            <div class="row">
+                <button :class="{ activebtn: activeTab == 0 || activeTab == 5 || activeTab == 6 }" @click="changeTab(0)">
+                    <span :class="{ activespan: activeTab == 0 || activeTab == 5 || activeTab == 6 }">
+                        Мои покупки</span>
+                </button>
+                <button :class="{ activebtn: activeTab == 1 }" @click="changeTab(1)">
+                    <span :class="{ activespan: activeTab == 1 }">Транзакции</span>
+                </button>
+            </div>
+            <div class="row">
+                <button :class="{ activebtn: activeTab == 2 || activeTab == 7 }" @click="changeTab(2)">
+                    <span :class="{ activespan: activeTab == 2 || activeTab == 7 }">Обратная связь</span>
+                </button>
+                <button :class="{ activebtn: activeTab == 3 }" @click="changeTab(3)">
+                    <span :class="{ activespan: activeTab == 3 }">Аккаунт</span>
+                </button>
+            </div>
+
+        </div>
+
         <div class="myproducts" v-if="activeTab == 0">
 
             <div class="products__body">
-                <div class="products__item">
-                    <small>1.</small>
+                <div class="products__item" v-for="(item, i) in buys" :key="item.id">
+                    <small>{{ i + 1 }}.</small>
                     <img src="@/assets/img/myproduct.png" alt="" loading="lazy">
 
                     <div class="product__full">
                         <div>
-                            <h1>Курс «Блюда высокой кухни со всех стран»</h1>
-                            <small>11 540 ₸</small>
+                            <h1>{{ item.products.name }}</h1>
+                            <small>{{ item.products.price == 0 ? 'Бесплатно' : (Math.floor(item.products.price -
+                                ((item.products.price * item.products.discount) /
+                                    100))).toLocaleString() + ' ₸'
+                            }}</small>
                         </div>
 
                         <div>
-                            <span>Дата покупки: 01.08.23</span>
+                            <span>Дата покупки: {{ formatDate(item.date) }}</span>
                         </div>
 
                         <div class="buttons">
-                            <button>Чат с продавцом</button>
-                            <button>Скачать файл</button>
+                            <button @click="createChat(item.seller.id, item.seller.user.first_name)">Чат с
+                                продавцом</button>
+
                         </div>
                     </div>
 
                 </div>
-                <div class="products__item">
-                    <small>2.</small>
-                    <img src="@/assets/img/myproduct.png" alt="" loading="lazy">
 
-                    <div class="product__full">
-                        <div>
-                            <h1>Курс «Блюда высокой кухни со всех стран»</h1>
-                            <small>11 540 ₸</small>
-                        </div>
-
-                        <div>
-                            <span>Дата покупки: 01.08.23</span>
-                        </div>
-
-                        <div><span>АВТОР: <span class="mb-0" style="text-decoration: underline; text-transform: none;">Анна
-                                    Скобина</span></span></div>
-
-                        <div class="buttons">
-                            <button>Чат с продавцом</button>
-                            <button>Скачать файл</button>
-                        </div>
-                    </div>
-
-                </div>
             </div>
         </div>
 
         <div class="chats" v-if="activeTab == 2">
-
-            <div class="chat__item">
+            <div class="chat__item" v-for="chat in chats" :key="chat.id">
                 <div>
-                    <h2>alex.ivanov@gmail.com</h2>
-                    <small>23.07.2023 14:47</small>
+                    <h2>{{ chat.seller.user.first_name }}</h2>
+                    <!-- <small>23.07.2023 14:47</small> -->
                 </div>
 
                 <div class="justify-content-end">
-                    <button @click="activeTab = 7">Открыть чат</button>
+                    <button @click="openChat(chat.id, chat.seller.user.first_name)">Открыть чат</button>
                 </div>
             </div>
 
-            <div class="chat__item">
-                <div>
-                    <h2>alex.ivanov@gmail.com</h2>
-                    <small>23.07.2023 14:47</small>
-                </div>
 
-                <div class="justify-content-end">
-                    <button @click="activeTab = 7">Открыть чат</button>
-                </div>
-            </div>
-
-            <div class="chat__item">
-                <div>
-                    <h2>alex.ivanov@gmail.com</h2>
-                    <small>23.07.2023 14:47</small>
-                </div>
-
-                <div class="justify-content-end">
-                    <button @click="activeTab = 7">Открыть чат</button>
-                </div>
-            </div>
 
         </div>
 
         <div class="profile" v-if="activeTab == 3">
-            <div>
+            <div class="ttrds">
                 <div class="inputs">
                     <div>
                         <label for="email">E-mail</label>
@@ -111,16 +92,19 @@
                     </div>
                 </div>
                 <div class="text-center">
-                    <button>Выйти из аккаунта</button>
+                    <button @click="logOut()">Выйти из аккаунта</button>
                 </div>
             </div>
         </div>
-        <TheMessanger v-if="activeTab == 7"></TheMessanger>
-        <TheTrans v-if="activeTab == 1"></TheTrans>
+        <TheMessanger v-if="activeTab == 7" :chatId="chatId" :name="chatName"></TheMessanger>
+        <TheTrans v-if="activeTab == 1" :transactions="transactions"></TheTrans>
     </div>
 </template>
 <script>
+import global from '~/mixins/global';
+import axios from 'axios';
 export default {
+    mixins: [global],
     data() {
         return {
             tabs: ['Мои покупки', 'Транзакции', 'Обратная связь', 'Аккаунт'],
@@ -129,9 +113,83 @@ export default {
             tabOffset: 0,
             email: '',
             password: '',
+            chats: [],
+            seller: [],
+            pathUrl: 'https://studynow.kz',
+            buys: [],
+            sendId: null,
+            chatId: null,
+            myId: null,
+            transactions: []
         }
     },
     methods: {
+        formatDate(dateString) {
+            const date = new Date(dateString);
+            const formattedDate = `${date.getDate().toString().padStart(2, '0')}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getFullYear()}`;
+            return formattedDate;
+        },
+        getAccount() {
+            const token = this.getAuthorizationCookie()
+            const path = `${this.pathUrl}/api/buyer/buyer-lk`;
+            axios.defaults.headers.common['Authorization'] = `Token ${token}`;
+            axios
+                .get(path)
+                .then(response => {
+                    this.account = response.data
+                    this.myId = response.data.id
+                    this.transactions = response.data.transactions
+                    this.email = response.data.user.email
+
+                })
+                .catch(error => console.log(error));
+        },
+        openChat(chatId, chatName) {
+            this.activeTab = 7;
+            this.chatId = chatId;
+            this.chatName = chatName
+        },
+        getBuys() {
+            const token = this.getAuthorizationCookie()
+            const path = `${this.pathUrl}/api/buyer/buyer-lk/my-purchases`
+            axios.defaults.headers.common['Authorization'] = `Token ${token}`;
+            axios
+                .get(path)
+                .then(response => {
+                    this.buys = response.data
+                })
+                .catch(error => {
+                    console.error(error)
+                })
+        },
+        createChat(id, name) {
+            const token = this.getAuthorizationCookie()
+            const csrf = this.getCSRFToken()
+            const path = `${this.pathUrl}/api/messanger/new-chat`
+            axios.defaults.headers.common['Authorization'] = `Token ${token}`;
+            axios.defaults.headers.common['X-CSRFToken'] = csrf;
+            axios
+                .post(path, {
+                    buyer: this.myId,
+                    seller: id,
+                })
+                .then(response => {
+                    const chatId = response.data.chat_id
+                    this.openChat(chatId, name)
+                })
+                .catch(error => console.log(error))
+        },
+        getChats() {
+            const token = this.getAuthorizationCookie()
+            const path = `${this.pathUrl}/api/messanger/all-chats`
+            axios.defaults.headers.common['Authorization'] = `Token ${token}`;
+            axios
+                .get(path)
+                .then(res => {
+                    this.chats = res.data
+                })
+                .catch(error => console.log(error))
+        },
         changeTab(index) {
             this.activeTab = index;
             this.updateHighlightPosition(index);
@@ -144,6 +202,17 @@ export default {
     },
     mounted() {
         this.updateHighlightPosition(this.activeTab);
+
+        const accType = localStorage.getItem('accountType')
+        console.log(accType)
+        if (accType == 'buyer-account') {
+            this.getAccount()
+            this.getChats()
+            this.getBuys()
+        }
+        else {
+            window.location.href = '/login'
+        }
     }
 }
 </script>
@@ -159,19 +228,46 @@ useSeoMeta({
 .account {
     padding: 125px 110px 72px;
 
+    @media (max-width: 1600px) {
+        padding: 125px 50px 72px;
+    }
+
+    @media (max-width: 1024px) {
+        padding: 125px 20px 50px;
+    }
+
     .profile {
         display: flex;
         align-items: center;
         justify-content: center;
         margin: 150px 0;
 
+        @media (max-width: 1024px) {
+            margin: 30px 0;
+        }
+
+        .ttrds {
+            @media (max-width: 1024px) {
+                width: 100%;
+            }
+        }
+
         .inputs {
             display: flex;
             gap: 20px;
 
+            @media (max-width: 1024px) {
+                flex-direction: column;
+                width: 100%;
+            }
+
             input,
             label {
                 display: block;
+            }
+
+            div {
+                width: 100%;
             }
 
             label {
@@ -197,6 +293,10 @@ useSeoMeta({
                 font-family: var(--int);
                 color: #000;
                 width: 23.438vw;
+
+                @media (max-width: 1024px) {
+                    width: 100%;
+                }
             }
         }
 
@@ -290,18 +390,42 @@ useSeoMeta({
                 display: flex;
                 margin-bottom: 30px;
 
+                @media (max-width: 1024px) {
+                    flex-direction: column;
+                    width: 100%;
+                    margin-bottom: 20px;
+                }
+
+                small {
+                    @media (max-width: 1024px) {
+                        &:first-child {
+                            display: none;
+                        }
+
+                    }
+                }
+
                 &:last-child {
                     margin-bottom: 0;
                 }
 
                 img {
-                    max-width: 470px;
-                    max-height: 308px;
+                    width: 470px;
+                    height: 308px;
+
+                    @media (max-width: 1024px) {
+                        width: 100%;
+                        height: auto;
+                    }
                 }
 
                 .product__full {
                     margin-left: 60px;
                     width: 100%;
+
+                    @media (max-width: 1024px) {
+                        margin: 0;
+                    }
 
                     .buttons {
                         display: flex;
@@ -310,6 +434,10 @@ useSeoMeta({
                         gap: 20px;
 
                         margin-top: 100px;
+
+                        @media (max-width: 1024px) {
+                            margin-top: 10px;
+                        }
 
 
                     }
@@ -323,6 +451,11 @@ useSeoMeta({
                         font-family: var(--int);
                         color: #000;
                         margin-top: 30px;
+
+                        @media (max-width: 1024px) {
+                            margin-top: 10px;
+                            font-size: 16px;
+                        }
                     }
 
                     div {
@@ -330,6 +463,16 @@ useSeoMeta({
                         justify-content: space-between;
                         align-items: center;
                         width: 100%;
+
+                        @media (max-width: 1024px) {
+                            &:first-child {
+                                flex-direction: column;
+                                align-items: flex-start;
+                                margin-top: 10px;
+                                gap: 10px;
+                            }
+
+                        }
 
                         h1 {
                             font-size: 24px;
@@ -340,6 +483,16 @@ useSeoMeta({
                             font-family: var(--int);
                             color: #000;
                             margin: 0;
+
+                            @media (max-width: 1600px) {
+                                text-transform: none;
+                                font-size: 18px;
+                            }
+
+                            @media (max-width: 1024px) {
+                                font-size: 16px;
+                                text-transform: none;
+                            }
 
                         }
 
@@ -352,6 +505,15 @@ useSeoMeta({
                             font-family: var(--int);
                             color: #000;
                             margin: 0;
+
+                            @media (max-width: 1600px) {
+                                text-transform: none;
+                                font-size: 30px;
+                            }
+
+                            @media (max-width: 1024px) {
+                                font-size: 24px;
+                            }
                         }
                     }
                 }
@@ -389,6 +551,62 @@ useSeoMeta({
         }
     }
 
+    .mobnav {
+        display: none;
+
+        @media (max-width: 1024px) {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            flex-direction: column;
+            padding: 0 15px;
+
+            .row {
+                display: flex;
+                gap: 10px;
+            }
+
+            .activebtn {
+                background: #FCF0FF !important;
+                box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.10) !important;
+            }
+
+            .activespan {
+                background: linear-gradient(90deg, #462885 0.64%, #A021A7 100%);
+                background-clip: text;
+                -webkit-background-clip: text;
+                -webkit-text-fill-color: transparent;
+
+            }
+
+            button {
+                flex: 1;
+                border: 0;
+                border-radius: 10px;
+                background: #fff;
+                box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.10);
+                padding: 15px 0;
+
+                font-size: 16px;
+                font-style: normal;
+                font-weight: 500;
+                line-height: 130%;
+                font-family: var(--int);
+                color: #000;
+                height: 50px;
+                transition: all .3s ease;
+
+                span {
+                    transition: all .3s ease;
+                }
+
+                // &:last-child {
+                //     width: 100%;
+                // }
+            }
+        }
+    }
+
     .account__nav {
         display: flex;
         justify-content: center;
@@ -396,6 +614,10 @@ useSeoMeta({
         gap: 66px;
         margin-top: 20px;
         position: relative;
+
+        @media (max-width: 1024px) {
+            display: none;
+        }
 
         .nav-item {
             cursor: pointer;
@@ -433,6 +655,10 @@ useSeoMeta({
         line-height: normal;
         font-family: var(--int);
         color: #000;
+
+        @media (max-width: 1024px) {
+            font-size: 24px;
+        }
     }
 }
 </style>

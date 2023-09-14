@@ -1,13 +1,12 @@
 <template>
     <div class="register w-100">
         <div class="register__left">
-            <div>
+            <div class="nex">
                 <h1>Регистрация</h1>
                 <input type="email" placeholder="Эл.почта" v-model="email" ref="email">
                 <input type="password" placeholder="Пароль" v-model="password" ref="password">
                 <input type="password" placeholder="Повторите пароль" v-model="repeat__password" ref="repeat__password">
-                <input type="text" placeholder="Отображаемое имя" v-model="name" ref="name"
-                    :class="{ 'd-none': userType == 'buyer' }">
+                <input type="text" placeholder="Отображаемое имя" v-model="name" ref="name">
 
                 <div class="buttons">
                     <button :class="{ active: userType == 'buyer' }" @click="userType = 'buyer'">
@@ -42,7 +41,7 @@
             </div>
         </div>
         <div class=" register__right">
-            <img src="@/assets/img/loginphoto.png" alt="" loading="lazy">
+            <img src="@/assets/img/loginphoto.png" class="img-fluid" alt="" loading="lazy">
         </div>
     </div>
 </template>
@@ -67,7 +66,7 @@ export default {
         register() {
             const buyer = `${this.pathUrl}/api/main/registration/buyer`
             const seller = `${this.pathUrl}/api/main/registration/seller`
-            //   const csrf = this.getCSRFToken()
+            const csrf = this.getCSRFToken()
 
             if (this.email !== '') {
                 this.error = ''
@@ -80,13 +79,14 @@ export default {
 
                     if (this.checked) {
                         this.$refs.checked.style.color = '#000'
-                        if (this.userType == 'seller') {
-                            if (this.name !== '') {
+                        if (this.name !== '') {
+                            if (this.userType == 'seller') {
+
                                 this.$refs.name.style.borderColor = '#000'
                                 this.error = ''
-                                //axios.defaults.headers.common['X-CSRFToken'] = csrf;
+                                axios.defaults.headers.common['X-CSRFToken'] = csrf;
                                 axios
-                                    .post(seller, { email: this.email, password: this.password, username: this.email })
+                                    .post(seller, { first_name: this.name, password: this.password, username: this.email, email: this.email })
                                     .then((res) => {
 
                                         document.cookie = `Authorization=${res.data.token}; expires=Fri, 31 Dec 2023 23:59:59 GMT; path=/`;
@@ -96,29 +96,31 @@ export default {
                                     })
                                     .catch((error) => {
                                         this.error = error.response.data.detail
-                                        console.log(error.response.data);
+                                        console.log(error.response);
                                     });
+
                             }
                             else {
-                                this.error = 'Вы не заполнили имя'
-                                this.$refs.name.style.borderColor = 'red'
+                                axios.defaults.headers.common['X-CSRFToken'] = csrf;
+                                this.error = ''
+                                axios
+                                    .post(buyer, { first_name: this.name, email: this.email, password: this.password, username: this.email, email: this.email })
+                                    .then((res) => {
+
+                                        document.cookie = `Authorization=${res.data.token}; expires=Fri, 31 Dec 2023 23:59:59 GMT; path=/`;
+                                        console.log(res)
+                                        localStorage.setItem('accountType', res.data.redirect_url)
+                                        window.location.href = '/'
+                                    })
+                                    .catch((error) => {
+                                        console.log(error.responseS);
+                                        this.error = error.response.data.detail
+                                    });
                             }
                         }
                         else {
-                            //axios.defaults.headers.common['X-CSRFToken'] = csrf;
-                            this.error = ''
-                            axios
-                                .post(buyer, { email: this.email, password: this.password, username: this.email })
-                                .then((res) => {
-                                    document.cookie = `Authorization=${res.data.token}; expires=Fri, 31 Dec 2023 23:59:59 GMT; path=/`;
-                                    console.log(res)
-                                    localStorage.setItem('accountType', res.data.redirect_url)
-                                    window.location.href = '/'
-                                })
-                                .catch((error) => {
-                                    console.log(error.response.data);
-                                    this.error = error.response.data.detail
-                                });
+                            this.error = 'Вы не заполнили имя'
+                            this.$refs.name.style.borderColor = 'red'
                         }
                     }
                     else {
@@ -152,11 +154,32 @@ useSeoMeta({
 .register {
     display: flex;
 
+    @media (max-width: 1024px) {
+        flex-direction: column-reverse;
+        justify-content: center;
+    }
+
     .register__left {
         background: #fff;
         box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.10);
         padding: 0 80px;
         height: 100vh;
+
+        @media (max-width: 1600px) {
+            padding: 50px;
+        }
+
+        .nex {
+            width: 100%;
+        }
+
+        @media (max-width: 1024px) {
+            background: transparent;
+            box-shadow: none;
+            justify-content: center;
+            padding: 45px 20px;
+            align-items: flex-start;
+        }
 
         display: flex;
         align-items: center;
@@ -194,6 +217,12 @@ useSeoMeta({
             font-family: var(--int);
             color: #000;
             margin-bottom: 40px;
+
+            @media (max-width: 1024px) {
+                text-align: center;
+                font-size: 40px;
+                margin-bottom: 20px;
+            }
         }
 
         .text-center {
@@ -268,6 +297,17 @@ useSeoMeta({
         align-items: center;
         justify-content: center;
         width: 100%;
+
+        @media (max-width: 1024px) {
+            padding: 50px 20px 0;
+        }
+
+        img {
+            @media (max-width: 1024px) {
+                max-width: 236px;
+                max-width: 289px;
+            }
+        }
     }
 }
 

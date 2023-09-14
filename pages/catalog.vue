@@ -6,7 +6,7 @@
             <div class="input-group">
 
                 <input type="text" class="form-control" placeholder="Поиск курса" aria-label="Поиск курса"
-                    aria-describedby="basic-addon1">
+                    aria-describedby="basic-addon1" v-model="search" @input="searchProducts">
                 <div class="input-group-prepend">
                     <span class="input-group-text" id="basic-addon1"><img src="@/assets/img/search.svg" alt=""
                             loading="lazy"></span>
@@ -14,158 +14,249 @@
             </div>
 
             <div class="filters">
-                <button @click="filters = !filters">
+                <button @click="filters = !filters" :class="{ activefilter: filters }">
                     <span>Фильтр</span>
-                    <img src="@/assets/img/filtersarrow.svg" alt="" loading="lazy">
+                    <img src="@/assets/img/filtersarrow.svg" alt="" loading="lazy" :class="{ activearrow: filters }">
                 </button>
-                <button @click="sort = !sort">
+                <button @click="sort = !sort" :class="{ activefilter: sort }">
                     <span>Сортировать</span>
-                    <img src="@/assets/img/filtersarrow.svg" alt="" loading="lazy">
+                    <img src="@/assets/img/filtersarrow.svg" alt="" loading="lazy" :class="{ activearrow: sort }">
                 </button>
             </div>
             <div class="sort__body" :class="{ active: sort }">
-                <button :class="{ btnactive: selectedSort == 1 }" @click="selectedSort = 1">Сначала дешевле</button>
-                <button :class="{ btnactive: selectedSort == 2 }" @click="selectedSort = 2">Сначала дороже</button>
-                <button :class="{ btnactive: selectedSort == 3 }" @click="selectedSort = 3">Самые новые</button>
-                <button :class="{ btnactive: selectedSort == 4 }" @click="selectedSort = 4">По популярности</button>
+                <button :class="{ btnactive: selectedSort == 1 }" @click="selectedSort = 1, sortBy('price')">Сначала
+                    дешевле</button>
+                <button :class="{ btnactive: selectedSort == 2 }" @click="selectedSort = 2, sortBy('-price')">Сначала
+                    дороже</button>
+                <button :class="{ btnactive: selectedSort == 3 }" @click="selectedSort = 3, sortBy('-date_activate')">Самые
+                    новые</button>
+                <button :class="{ btnactive: selectedSort == 4 }" @click="selectedSort = 4, sortBy('date_activate')">Самые
+                    старые</button>
             </div>
             <div class="filters__body" :class="{ active: filters }">
                 <div>
-                    <label class="custom-checkbox">
-                        <input type="checkbox">
-                        <p class="checkbox-text m-0">IT</p>
+                    <label class="custom-checkbox" v-for="(category, index) in categories1" :key="index">
+                        <input type="checkbox" :value="index + 1" v-model="selectedCategories" @change="applyFilters">
+                        <p class="checkbox-text m-0">{{ category }}</p>
                     </label>
-                    <label class="custom-checkbox">
-                        <input type="checkbox">
-                        <p class="checkbox-text m-0">Красота и здоровье</p>
-                    </label>
-                    <label class="custom-checkbox">
-                        <input type="checkbox">
-                        <p class="checkbox-text m-0">Творчество и хобби</p>
-                    </label>
-                    <label class="custom-checkbox">
-                        <input type="checkbox">
-                        <p class="checkbox-text m-0">Психология</p>
-                    </label>
-                    <label class="custom-checkbox">
-                        <input type="checkbox">
-                        <p class="checkbox-text m-0">Языки</p>
-                    </label>
-                    <label class="custom-checkbox">
-                        <input type="checkbox">
-                        <p class="checkbox-text m-0">Бизнес</p>
-                    </label>
-                    <label class="custom-checkbox">
-                        <input type="checkbox">
-                        <p class="checkbox-text m-0">Спорт</p>
-                    </label>
+
                 </div>
                 <div>
-                    <label class="custom-checkbox">
-                        <input type="checkbox">
-                        <p class="checkbox-text m-0">Духовное развитие</p>
+                    <label class="custom-checkbox" v-for="(category, index) in categories2" :key="index">
+
+                        <input type="checkbox" :value="index + 8" v-model="selectedCategories" @change="applyFilters">
+                        <p class="checkbox-text m-0">{{ category }}</p>
                     </label>
-                    <label class="custom-checkbox">
-                        <input type="checkbox">
-                        <p class="checkbox-text m-0">Дети</p>
-                    </label>
-                    <label class="custom-checkbox">
-                        <input type="checkbox">
-                        <p class="checkbox-text m-0">Маркетинг</p>
-                    </label>
-                    <label class="custom-checkbox">
-                        <input type="checkbox">
-                        <p class="checkbox-text m-0">Финансы</p>
-                    </label>
-                    <label class="custom-checkbox">
-                        <input type="checkbox">
-                        <p class="checkbox-text m-0">Мода</p>
-                    </label>
-                    <label class="custom-checkbox">
-                        <input type="checkbox">
-                        <p class="checkbox-text m-0">Разработка игр</p>
-                    </label>
-                    <label class="custom-checkbox">
-                        <input type="checkbox">
-                        <p class="checkbox-text m-0">Продажи</p>
-                    </label>
+
                 </div>
                 <div>
-                    <label class="custom-checkbox">
-                        <input type="checkbox">
-                        <p class="checkbox-text m-0">Радиотехника</p>
-                    </label>
-                    <label class="custom-checkbox">
-                        <input type="checkbox">
-                        <p class="checkbox-text m-0">Бесплатные курсы</p>
-                    </label>
-                    <label class="custom-checkbox">
-                        <input type="checkbox">
-                        <p class="checkbox-text m-0">Приготовление пищи</p>
-                    </label>
-                    <label class="custom-checkbox">
-                        <input type="checkbox">
-                        <p class="checkbox-text m-0">Съёмка</p>
+                    <label class="custom-checkbox" v-for="(category, index) in categories3" :key="index">
+                        <input type="checkbox" :value="index + 15" v-model="selectedCategories" @change="applyFilters">
+                        <p class="checkbox-text m-0">{{ category }}</p>
                     </label>
 
 
-                    <h2>Цена</h2>
-                    <div class="price">
-                        <input type="number" placeholder="от">
-                        <img src="@/assets/img/line.svg" alt="" loading="lazy">
-                        <input type="number" placeholder="до">
+
+
+                    <div class="cas">
+                        <h2>Цена</h2>
+                        <div class="price">
+                            <input type="number" placeholder="от" v-model="minPrice" @input="applyFilters">
+                            <img src="@/assets/img/line.svg" alt="" loading="lazy">
+                            <input type="number" placeholder="до" v-model="maxPrice" @input="applyFilters">
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
+        <div v-if="catalog.length <= 0"></div>
+        <div class="catalog__body" v-else>
+            <div class="catalog__item" v-for="item in catalog.results" :key="item.id">
+                <img :src="pathUrl + '/api' + item.add_image[0]" />
+                <h2>{{ item.name }}</h2>
+                <p>{{ item.short_description }}</p>
 
-        <div class="catalog__body">
-            <div class="catalog__item">
-                <img src="@/assets/img/sales1.png" />
-                <h2>Курсы визажиста «Make-up с нуля»</h2>
-                <p>Погрузись в мир красоты с курсом от профессионалов</p>
-
-                <ul class="dot-list">
-                    <li>10 видеоуроков</li>
-                    <li>3 эксперта</li>
-                    <li>Быстрая обратная связь с разбором ошибок</li>
+                <ul class="dot-list" v-if="item.key_features">
+                    <li v-for="(feature, index) in item.key_features.split('\r\n').slice(0, 3)" :key="index">{{ feature }}
+                    </li>
                 </ul>
 
                 <div class="price">
-                    <h3>13 000 ₸</h3>
+                    <span v-if="item.discount > 0">
+                        {{ item.price.toLocaleString() + ' ₸' }}
+                        <img src="@/assets/img/disc.svg" alt="" loading="lazy">
+                    </span>
+                    <h3 v-if="item.discount > 0">
+                        {{ (Math.floor(item.price - ((item.price * item.discount) / 100))).toLocaleString() + ' ₸' }}</h3>
+                    <h3 v-else>{{ item.price == 0 ? 'Бесплатно' : item.price.toLocaleString() + ' ₸' }}</h3>
                 </div>
 
                 <div class="buttons">
-                    <NuxtLink to="/product">
+                    <NuxtLink :to="'/product/' + item.id" ref="buy">
                         Подробнее
                     </NuxtLink>
-                    <NuxtLink to="/">
-                        Купить
+                    <NuxtLink ref="buy" @click="addToCart(item.id)" style="cursor: pointer;">
+                        {{ item.addToCartStatus || 'Купить' }}
                     </NuxtLink>
                 </div>
             </div>
         </div>
 
         <div class="pag text-center">
-            <button ref="showmore" @click="pagination">Показать еще</button>
+            <button ref="showmore" @click="loadMoreProducts()">Показать еще</button>
         </div>
     </div>
 </template>
 <script>
+import global from '~/mixins/global';
+import axios from 'axios';
 export default {
+    mixins: [global],
     data() {
         return {
             sort: false,
             filters: false,
             selectedSort: 0,
+            selectedCategories: [],
+            addToCartStatus: '',
+            catalog: [],
+            minPrice: null,
+            maxPrice: null,
+            pathUrl: 'https://studynow.kz',
+            search: '',
+            categories1: ['IT', 'Красота и здоровье', 'Творчество и хобби', 'Психология', 'Языки', 'Бизнес', 'Спорт'],
+            categories2: ['Духовное развитие', 'Дети', 'Маркетинг', 'Финансы', 'Мода', 'Разработка игр', 'Продажи'],
+            categories3: ['Радиотехника', 'Бесплатные курсы', 'Приготовление пищи', 'Съёмка'],
         }
     },
     methods: {
-        pagination() {
-            this.$refs.showmore.innerHTML = 'Подгружаем'
-            this.$refs.showmore.innerHTML = 'Больше ничего нет (;'
-        }
+
+        addToCart(id) {
+            const path = `${this.pathUrl}/api/buyer/add-product-basket`
+            const csrf = this.getCSRFToken()
+            axios.defaults.headers.common['X-CSRFToken'] = csrf;
+            axios
+                .post(path, {
+                    products: id,
+                    amount: 1,
+                })
+                .then(response => {
+                    const index = this.catalog.results.findIndex(item => item.id === id);
+                    if (response.status == 201) {
+                        // Присвоение значения напрямую
+                        this.catalog.results[index].addToCartStatus = 'Добавлен';
+                    } else {
+                        this.catalog.results[index].addToCartStatus = 'Ошибка';
+                    }
+                    console.log(response)
+                })
+                .catch(error => {
+                    console.error(error)
+                })
+        },
+        getCatalog() {
+            const queryParams = new URLSearchParams(window.location.search);
+            const categoryParam = queryParams.get('category');
+
+            let url = `${this.pathUrl}/api/products/all-product`;
+            if (categoryParam) {
+                url += `?category__in=${categoryParam}`;
+            }
+
+            axios
+                .get(url)
+                .then(response => {
+                    this.catalog = response.data;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        },
+        loadMoreProducts() {
+            if (this.catalog.next) {
+                this.$refs.showmore.innerHTML = 'Загружаем'
+                axios
+                    .get(this.catalog.next)
+                    .then(response => {
+                        // Добавляем новые продукты к существующим
+                        this.catalog.results.push(...response.data.results);
+                        this.catalog.next = response.data.next;
+                    })
+                    .catch(error => {
+                        console.error(error);
+                    });
+            }
+            else {
+                this.$refs.showmore.innerHTML = 'Больше ничего нет (;'
+            }
+        },
+        sortBy(ordering) {
+            this.sort = false
+            const path = `${this.pathUrl}/api/products/all-product?ordering=${ordering}`;
+            axios
+                .get(path)
+                .then(response => {
+                    this.catalog = response.data;
+
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        },
+
+        applyFilters() {
+            const params = new URLSearchParams();
+            if (this.minPrice !== null) {
+                params.append('price__gte', this.minPrice);
+            }
+            if (this.maxPrice !== null) {
+                params.append('price__lte', this.maxPrice);
+            }
+
+            if (this.selectedCategories.length > 0) {
+                params.append('category__in', this.selectedCategories.join(','));
+            }
+            if (this.search) {
+                params.append('name__icontains', this.search);
+            }
+
+            this.fetchFilteredProducts(params);
+        },
+        fetchFilteredProducts(params) {
+            const path = `${this.pathUrl}/api/products/all-product?${params.toString()}`;
+            axios
+                .get(path)
+                .then(response => {
+                    this.catalog = response.data;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        },
+        searchProducts() {
+            const query = this.search.trim();
+            if (query) {
+                const queryParams = `?name__icontains=${query}`;
+                this.fetchSearchResults(queryParams);
+            } else {
+                this.getCatalog();
+            }
+        },
+        fetchSearchResults(queryParams) {
+            const path = `${this.pathUrl}/api/products/all-product${queryParams}`;
+            axios
+                .get(path)
+                .then(response => {
+                    this.catalog = response.data;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        },
+    },
+    mounted() {
+        this.getCatalog()
     }
 }
 </script>
@@ -180,6 +271,14 @@ useSeoMeta({
 <style lang="scss" scoped>
 .catalog {
     padding: 125px 110px 90px;
+
+    @media (max-width: 1660px) {
+        padding: 125px 50px 90px;
+    }
+
+    @media (max-width: 1024px) {
+        padding: 125px 20px 50px;
+    }
 
     h1 {
         font-size: 40px;
@@ -216,19 +315,40 @@ useSeoMeta({
     }
 
     .catalog__body {
-        margin-top: 62px;
-        display: flex;
-        flex-wrap: wrap;
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
         gap: 50px;
+        grid-auto-flow: dense;
+        margin-top: 30px;
+
+        @media (max-width: 1600px) {
+            gap: 40px;
+        }
+
+        @media (max-width: 1400px) {
+            gap: 20px;
+            justify-content: center;
+        }
 
         .catalog__item {
             padding: 20px;
             border-radius: 10px;
             background: #fff;
             box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.10);
-            max-width: 300px;
+            max-width: 100%;
             display: flex;
             flex-direction: column;
+
+            @media (max-width: 1200px) {
+                max-width: 100%;
+                width: 100%;
+                padding: 10px;
+            }
+
+            img {
+                max-width: 100%;
+            }
+
 
             h2 {
                 font-size: 20px;
@@ -239,6 +359,10 @@ useSeoMeta({
                 color: #000;
                 margin-top: 15px;
                 margin-bottom: 10px;
+
+                @media (max-width: 1024px) {
+                    font-size: 16px;
+                }
             }
 
             p {
@@ -249,6 +373,10 @@ useSeoMeta({
                 font-weight: 400;
                 line-height: 130%;
                 font-family: var(--int);
+
+                @media (max-width: 1024px) {
+                    font-size: 12px;
+                }
             }
 
 
@@ -264,6 +392,10 @@ useSeoMeta({
                 display: flex;
                 align-items: flex-start;
                 white-space: normal;
+
+                @media (max-width: 1024px) {
+                    font-size: 12px;
+                }
             }
 
             ul {
@@ -275,6 +407,11 @@ useSeoMeta({
                 margin-top: 10px;
 
                 gap: 10px;
+
+                @media (max-width: 1024px) {
+                    padding: 0 20px;
+                    flex-direction: row-reverse;
+                }
 
                 a {
                     padding: 10px 15px;
@@ -320,6 +457,10 @@ useSeoMeta({
                 justify-content: center;
                 gap: 0 28px;
 
+                @media (max-width: 1024px) {
+                    flex-direction: row-reverse;
+                }
+
                 span {
                     font-size: 12px;
                     font-style: normal;
@@ -342,6 +483,10 @@ useSeoMeta({
                     line-height: 130%;
                     font-family: var(--int);
                     color: #000;
+
+                    @media (max-width: 1024px) {
+                        font-size: 20px;
+                    }
                 }
             }
         }
@@ -355,14 +500,23 @@ useSeoMeta({
         margin-top: 42px;
         position: relative;
 
+        @media (max-width: 1024px) {
+            flex-direction: column;
+            gap: 20px;
+        }
+
         .active {
             transform: scaleX(1) !important;
             opacity: 1 !important;
+
+            @media (max-width: 1024px) {
+                transform: scaleY(1) !important;
+            }
         }
 
         .sort__body {
             position: absolute;
-            right: 16%;
+            right: 0;
             margin-top: 80px;
             transition: all .3s ease;
             opacity: 0;
@@ -375,6 +529,12 @@ useSeoMeta({
             display: flex;
             flex-direction: column;
             gap: 25px;
+
+            @media (max-width: 1024px) {
+                margin-top: 150px;
+                right: 0;
+                gap: 10px;
+            }
 
             button {
                 font-size: 20px;
@@ -404,19 +564,39 @@ useSeoMeta({
             background: #fff;
             box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.10);
             position: absolute;
-            right: 16%;
+            right: 0;
             margin-top: 80px;
             transition: all .3s ease;
             opacity: 0;
             transform: scaleX(0);
+            z-index: 15;
 
 
             display: flex;
             gap: 75px;
 
+            @media (max-width: 1024px) {
+                flex-direction: column-reverse;
+                right: 0;
+                margin-top: 150px;
+                transform: scaleY(0);
+                width: 100%;
+                padding: 15px;
+                gap: 0px;
+            }
+
+            .cas {
+                flex-direction: column;
+                margin-bottom: 30px;
+            }
+
             div {
                 display: flex;
                 flex-direction: column;
+
+                @media (max-width: 1024px) {
+                    flex-direction: column-reverse;
+                }
 
                 .price {
                     display: flex;
@@ -434,6 +614,11 @@ useSeoMeta({
                         font-weight: 400;
                         line-height: 130%;
                         font-family: var(--int);
+
+                        @media (max-width: 1024px) {
+                            max-width: 120px;
+                            padding: 4px 10px;
+                        }
                     }
                 }
             }
@@ -483,10 +668,24 @@ useSeoMeta({
         .filters {
             display: flex;
             gap: 0 30px;
+            width: 100%;
+
+            @media (max-width: 1024px) {
+                gap: 20px;
+            }
+
+            .activefilter {
+                background: #FCF0FF;
+            }
+
+            .activearrow {
+                transform: rotate(90deg);
+            }
 
             button {
                 flex: 1;
                 display: flex;
+                justify-content: center;
                 align-items: center;
                 gap: 10px;
                 border-radius: 10px;
@@ -494,6 +693,7 @@ useSeoMeta({
                 box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.10);
                 padding: 15px 25px;
                 border: 0;
+                transition: all .3s ease;
 
                 font-size: 20px;
                 font-style: normal;
@@ -501,7 +701,17 @@ useSeoMeta({
                 line-height: 130%;
                 font-family: var(--int);
                 color: #000;
+
+                @media (max-width: 1024px) {
+                    font-size: 16px;
+                    padding: 15px 20px;
+                }
+
+                img {
+                    transition: all .3s ease;
+                }
             }
+
         }
     }
 }
@@ -545,9 +755,14 @@ useSeoMeta({
 
 .custom-checkbox {
     margin-bottom: 22px;
+
 }
 
 .custom-checkbox:last-child {
     margin-bottom: 0 !important;
+
+    @media (max-width: 1024px) {
+        margin-bottom: 22px !important;
+    }
 }
 </style>

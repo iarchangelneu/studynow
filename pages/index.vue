@@ -457,7 +457,8 @@
                 <h1>Отзывы</h1>
 
                 <div class="review__slider">
-                    <swiper :slides-per-view="3" :space-between="30" :modules="modules" :navigation="navigation">
+                    <swiper :slides-per-view="3" :space-between="30" :breakpoints="breakpoints" :modules="modules"
+                        :navigation="navigation">
                         <swiper-slide class="slide">
                             <h2>Все лучшие преподаватели здесь</h2>
                             <p class="mb-0">
@@ -508,9 +509,12 @@
 
 
                     </swiper>
-
-                    <img src="@/assets/img/next.svg" class="next" alt="" loading="lazy">
+                    <div class="pcnext">
+                        <img src="@/assets/img/prev.svg" class="prev" alt="" loading="lazy">
+                        <img src="@/assets/img/next.svg" class="next" alt="" loading="lazy">
+                    </div>
                 </div>
+
             </div>
         </div>
     </section>
@@ -533,7 +537,19 @@ export default {
             modules: [Navigation],
             navigation: {
                 nextEl: '.next',
+                prevEl: '.prev'
             },
+            breakpoints: {
+                320: {
+                    slidesPerView: 1,
+                    spaceBetween: 10,
+
+                },
+                1300: {
+                    slidesPerView: 3,
+                    spaceBetween: 30,
+                }
+            }
         }
     }
 }
@@ -550,8 +566,20 @@ useSeoMeta({
 .page {
     padding: 53px 110px 110px;
 
+    @media (max-width: 1600px) {
+        padding: 53px 50px 110px;
+    }
+
+    @media (max-width: 1024px) {
+        padding: 30px 20px 50px;
+    }
+
     .reviews {
         margin-top: 80px;
+
+        @media (max-width: 1024px) {
+            margin-top: 30px;
+        }
 
         h1 {
             font-size: 40px;
@@ -560,6 +588,10 @@ useSeoMeta({
             line-height: 130%;
             font-family: var(--int);
             color: #000;
+
+            @media (max-width: 1024px) {
+                font-size: 24px;
+            }
         }
 
         .review__slider {
@@ -567,6 +599,31 @@ useSeoMeta({
             display: flex;
             align-items: center;
             gap: 0 60px;
+
+            @media (max-width: 1200px) {
+                display: block;
+                gap: 20px;
+            }
+
+            @media (max-width: 1024px) {
+                margin-top: 15px;
+            }
+
+
+            .pcnext {
+                display: flex;
+                justify-content: center;
+                margin-top: 20px;
+                gap: 20px;
+
+                .prev {
+                    display: none;
+
+                    @media(max-width: 1200px) {
+                        display: block;
+                    }
+                }
+            }
 
             .slide {
                 padding: 20px;
@@ -588,6 +645,10 @@ useSeoMeta({
                     font-family: var(--int);
                     margin-bottom: 15px;
 
+                    @media (max-width: 1024px) {
+                        font-size: 16px;
+                    }
+
 
                 }
 
@@ -599,6 +660,10 @@ useSeoMeta({
                     font-family: var(--int);
                     color: #000;
                     margin-bottom: 15px;
+
+                    @media (max-width: 1024px) {
+                        font-size: 12px;
+                    }
                 }
 
                 span {
@@ -608,6 +673,10 @@ useSeoMeta({
                     line-height: 130%;
                     font-family: var(--int);
                     color: #000;
+
+                    @media (max-width: 1024px) {
+                        font-size: 16px;
+                    }
                 }
             }
 
@@ -621,6 +690,10 @@ useSeoMeta({
 
         margin-top: 80px;
 
+        @media (max-width: 1024px) {
+            margin-top: 30px;
+        }
+
         h2 {
             font-size: 40px;
             font-style: normal;
@@ -630,6 +703,20 @@ useSeoMeta({
             color: #000;
 
             padding: 0 218px;
+
+            @media (max-width: 1600px) {
+                padding: 0 150px;
+            }
+
+            @media (max-width: 1200px) {
+                padding: 0;
+                font-size: 30px;
+            }
+
+            @media (max-width: 1024px) {
+                font-size: 18px;
+                margin: 0;
+            }
         }
 
         h1 {
@@ -641,6 +728,11 @@ useSeoMeta({
             color: #000;
             margin-top: 30px;
 
+            @media (max-width: 1024px) {
+                font-size: 30px;
+                margin-top: 20px;
+            }
+
             span {
                 background: linear-gradient(90deg, #462885 0.64%, #A021A7 100%);
                 background-clip: text;
@@ -651,6 +743,10 @@ useSeoMeta({
                 font-style: normal;
                 font-weight: 400;
                 line-height: 130%;
+
+                @media (max-width: 1024px) {
+                    font-size: 30px;
+                }
             }
         }
 
@@ -671,6 +767,10 @@ useSeoMeta({
             color: #fff;
             transition: all .3s ease;
 
+            @media (max-width: 1024px) {
+                margin-top: 20px;
+            }
+
             &:hover {
                 background: linear-gradient(90deg, #462885 0.64%, #A021A7 100%);
             }
@@ -680,6 +780,10 @@ useSeoMeta({
     .popular {
         margin-top: 80px;
 
+        @media (max-width: 1024px) {
+            margin-top: 30px;
+        }
+
         h1 {
             font-size: 40px;
             font-style: normal;
@@ -688,22 +792,50 @@ useSeoMeta({
             font-family: var(--int);
             color: #000;
             margin-bottom: 30px;
+
+            @media (max-width: 1024px) {
+                font-size: 24px;
+            }
         }
 
         .sales__body {
-            display: flex;
-            flex-wrap: wrap;
-            margin-top: 30px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-auto-flow: dense;
             gap: 30px 50px;
+            margin-top: 30px;
+
+
+            @media (max-width: 1600px) {
+                gap: 30px 40px;
+            }
+
+            @media (max-width: 1400px) {
+                gap: 30px 20px;
+                justify-content: center;
+            }
+
+            @media (max-width: 1024px) {
+                margin-top: 15px;
+                gap: 20px;
+            }
+
 
             .sales__block {
                 padding: 20px;
                 border-radius: 10px;
                 background: #fff;
                 box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.10);
-                max-width: 300px;
+                max-width: 100%;
                 display: flex;
                 flex-direction: column;
+
+                @media (max-width: 1200px) {
+                    max-width: 100%;
+                    width: 100%;
+                    padding: 10px;
+                }
+
 
 
                 h2 {
@@ -715,6 +847,10 @@ useSeoMeta({
                     color: #000;
                     margin-top: 15px;
                     margin-bottom: 10px;
+
+                    @media (max-width: 1024px) {
+                        font-size: 16px;
+                    }
                 }
 
                 p {
@@ -725,6 +861,10 @@ useSeoMeta({
                     font-weight: 400;
                     line-height: 130%;
                     font-family: var(--int);
+
+                    @media (max-width: 1024px) {
+                        font-size: 12px;
+                    }
                 }
 
 
@@ -740,6 +880,10 @@ useSeoMeta({
                     display: flex;
                     align-items: flex-start;
                     white-space: normal;
+
+                    @media (max-width: 1024px) {
+                        font-size: 12px;
+                    }
                 }
 
                 ul {
@@ -751,6 +895,11 @@ useSeoMeta({
                     margin-top: 10px;
 
                     gap: 10px;
+
+                    @media (max-width: 1024px) {
+                        padding: 0 20px;
+                        flex-direction: row-reverse;
+                    }
 
                     a {
                         padding: 10px 15px;
@@ -796,6 +945,10 @@ useSeoMeta({
                     justify-content: center;
                     gap: 0 28px;
 
+                    @media (max-width: 1024px) {
+                        flex-direction: row-reverse;
+                    }
+
                     span {
                         font-size: 12px;
                         font-style: normal;
@@ -818,6 +971,10 @@ useSeoMeta({
                         line-height: 130%;
                         font-family: var(--int);
                         color: #000;
+
+                        @media (max-width: 1024px) {
+                            font-size: 20px;
+                        }
                     }
                 }
             }
@@ -827,6 +984,10 @@ useSeoMeta({
     .category {
         margin-top: 9px;
 
+        @media (max-width: 1024px) {
+            margin-top: 30px;
+        }
+
         h1 {
             font-size: 40px;
             font-style: normal;
@@ -835,6 +996,10 @@ useSeoMeta({
             font-family: var(--int);
             color: #000;
             margin-bottom: 30px;
+
+            @media (max-width: 1024px) {
+                font-size: 24px;
+            }
         }
 
         .category__block {
@@ -842,10 +1007,20 @@ useSeoMeta({
             flex-wrap: wrap;
             gap: 30px 80px;
 
+            @media (max-width: 1200px) {
+                flex-direction: column;
+                flex-wrap: nowrap;
+                gap: 20px;
+            }
+
             div {
                 display: flex;
                 flex-direction: column;
                 gap: 30px 0;
+
+                @media (max-width: 1200px) {
+                    gap: 20px;
+                }
             }
 
             a {
@@ -861,6 +1036,10 @@ useSeoMeta({
                 display: flex;
                 align-items: center;
                 gap: 0 10px;
+
+                @media (max-width: 1024px) {
+                    font-size: 16px;
+                }
 
                 img {
                     display: block;
@@ -892,6 +1071,10 @@ useSeoMeta({
             font-family: var(--int);
             color: #000;
             margin-bottom: 0;
+
+            @media (max-width: 1024px) {
+                font-size: 24px;
+            }
         }
 
         .link {
@@ -920,19 +1103,43 @@ useSeoMeta({
         }
 
         .sales__body {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-auto-flow: dense;
             margin-top: 30px;
             gap: 30px 50px;
+
+
+            @media (max-width: 1600px) {
+                gap: 30px 40px;
+            }
+
+            @media (max-width: 1400px) {
+                gap: 30px 20px;
+                justify-content: center;
+            }
+
+            @media (max-width: 1024px) {
+                margin-top: 15px;
+                gap: 20px;
+            }
+
 
             .sales__block {
                 padding: 20px;
                 border-radius: 10px;
                 background: #fff;
                 box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.10);
-                max-width: 300px;
+                max-width: 100%;
                 display: flex;
                 flex-direction: column;
+
+                @media (max-width: 1200px) {
+                    max-width: 100%;
+                    width: 100%;
+                    padding: 10px;
+                }
+
 
 
                 h2 {
@@ -944,6 +1151,10 @@ useSeoMeta({
                     color: #000;
                     margin-top: 15px;
                     margin-bottom: 10px;
+
+                    @media (max-width: 1024px) {
+                        font-size: 16px;
+                    }
                 }
 
                 p {
@@ -954,6 +1165,10 @@ useSeoMeta({
                     font-weight: 400;
                     line-height: 130%;
                     font-family: var(--int);
+
+                    @media (max-width: 1024px) {
+                        font-size: 12px;
+                    }
                 }
 
 
@@ -969,6 +1184,10 @@ useSeoMeta({
                     display: flex;
                     align-items: flex-start;
                     white-space: normal;
+
+                    @media (max-width: 1024px) {
+                        font-size: 12px;
+                    }
                 }
 
                 ul {
@@ -980,6 +1199,11 @@ useSeoMeta({
                     margin-top: 10px;
 
                     gap: 10px;
+
+                    @media (max-width: 1024px) {
+                        padding: 0 20px;
+                        flex-direction: row-reverse;
+                    }
 
                     a {
                         padding: 10px 15px;
@@ -1022,7 +1246,16 @@ useSeoMeta({
                 .price {
                     display: flex;
                     align-items: center;
+                    justify-content: center;
                     gap: 0 28px;
+
+                    @media (max-width: 1024px) {
+                        flex-direction: row-reverse;
+
+                        div {
+                            display: none;
+                        }
+                    }
 
                     span {
                         font-size: 12px;
@@ -1046,6 +1279,10 @@ useSeoMeta({
                         line-height: 130%;
                         font-family: var(--int);
                         color: #000;
+
+                        @media (max-width: 1024px) {
+                            font-size: 20px;
+                        }
                     }
                 }
             }
@@ -1057,6 +1294,11 @@ section {
     background: url('@/assets/img/bgmain.png');
     background-repeat: no-repeat;
     background-position: top;
+
+    @media (max-width: 1024px) {
+        background: url('@/assets/img/bgmob.png') no-repeat;
+        background-size: 100%;
+    }
 }
 
 .main {
@@ -1067,8 +1309,10 @@ section {
     align-items: center;
     text-align: center;
 
-
-
+    @media (max-width: 1024px) {
+        height: auto;
+        padding-top: 90px;
+    }
 
     .main__body {
         h1 {
@@ -1081,6 +1325,14 @@ section {
             background-clip: text;
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+
+            @media (max-width: 1200px) {
+                font-size: 80px;
+            }
+
+            @media (max-width: 1024px) {
+                font-size: 48px;
+            }
         }
 
         h2 {
@@ -1090,10 +1342,22 @@ section {
             line-height: 120%;
             font-family: var(--int);
             color: #000;
+
+            @media (max-width: 1200px) {
+                font-size: 50px;
+            }
+
+            @media (max-width: 1024px) {
+                font-size: 20px;
+            }
         }
 
         .mouse {
             margin-top: 150px;
+
+            @media (max-width: 1024px) {
+                display: none !important;
+            }
 
 
             @keyframes scaleAnimation {
@@ -1129,6 +1393,10 @@ section {
             padding: 15px 40px;
             text-align: center;
             margin: 52px 20px 0;
+
+            @media (max-width: 1024px) {
+                padding: 15px 20px;
+            }
 
             input {
                 border-radius: 10px;

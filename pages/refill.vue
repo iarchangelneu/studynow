@@ -8,7 +8,7 @@
                 <div class="text-center">
                     <h1>Пополнение баланса</h1>
 
-                    <div class="change">
+                    <div class="change" v-if="accountType == 'buyer'">
                         <NuxtLink to="/refill">Пополнение</NuxtLink>
                         <NuxtLink to="/withdrawal">Вывод</NuxtLink>
                     </div>
@@ -30,9 +30,11 @@
                     будете
                     переадресованы на сайт платежной системы, где сможете завершить платеж.</p>
 
+
+
                 <div class="send">
                     <input type="number" v-model="count" placeholder="Введите сумму">
-                    <button>Пополнить</button>
+                    <button ref="inBtn" @click="inMoney">Пополнить</button>
                 </div>
 
                 <div class="summ">
@@ -47,17 +49,64 @@
     </div>
 </template>
 <script>
+import global from '~/mixins/global';
+import axios from 'axios'
 export default {
+    mixins: [global],
     data() {
         return {
             count: null,
+            accountType: '',
+            pathUrl: 'https://studynow.kz',
+            checked: false,
         }
     },
     methods: {
-        goBack() {
-            this.prevPage = this.$nuxt.$router.go(-1); // Вернуться на предыдущий маршрут
+        inMoney() {
+            const token = this.getAuthorizationCookie()
+            const csrf = this.getCSRFToken()
+            const path = `${this.pathUrl}/api/money/new-pay`
+            axios.defaults.headers.common['Authorization'] = `Token ${token}`;
+            axios.defaults.headers.common['X-CSRFToken'] = csrf;
+            this.$refs.inBtn.innerHTML = 'ОЖИДАЙТЕ'
+
+            axios
+                .post(path, {
+                    amount: this.count
+                })
+                .then(response => {
+                    console.log(response)
+                    window.location.href = response.data.url
+                    if (response.status = 201) {
+                        this.$refs.inBtn.innerHTML = 'ПОПОЛНИТЬ'
+                    }
+                    if (response.status == 228) {
+                        this.$refs.outBtn.innerHTML = response.data.error_msg
+                    }
+                })
+                .catch(error => {
+                    console.error(error)
+                    this.$refs.inBtn.innerHTML = 'ПОПОЛНИТЬ'
+                })
         },
     },
+    mounted() {
+        const accType = localStorage.getItem('accountType')
+        if (accType !== 'buyer-account' && accType !== 'seller-account') {
+            window.location.href = '/login'
+        }
+        if (accType == 'buyer-account') {
+            this.accountType = 'buyer'
+
+        }
+        else if (accType == 'seller-account') {
+            this.accountType = 'seller'
+        }
+        else {
+            return
+        }
+
+    }
 
 }
 </script>
@@ -73,6 +122,15 @@ useSeoMeta({
 .refill {
     padding: 120px 110px 170px;
 
+
+    @media (max-width: 1600px) {
+        padding: 125px 50px 110px;
+    }
+
+    @media (max-width: 1024px) {
+        padding: 125px 20px 50px;
+    }
+
     .refill__block {
         display: flex;
         align-items: center;
@@ -84,6 +142,10 @@ useSeoMeta({
             background: #FFF;
             box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.10);
             padding: 40px;
+
+            @media (max-width: 1024px) {
+                padding: 20px;
+            }
 
             .change {
                 display: flex;
@@ -101,6 +163,10 @@ useSeoMeta({
                     font-weight: 400;
                     line-height: 110%;
                     font-family: var(--int);
+
+                    @media (max-width: 1024px) {
+                        font-size: 18px;
+                    }
                 }
 
                 a:first-child {
@@ -127,6 +193,10 @@ useSeoMeta({
                 flex-wrap: wrap;
                 gap: 10px;
 
+                @media (max-width: 1024px) {
+                    justify-content: center;
+                }
+
                 .active {
                     color: #fff;
                     background: #000;
@@ -145,6 +215,10 @@ useSeoMeta({
                     color: #000;
                     font-family: var(--int);
                     transition: all .3s ease;
+
+                    @media (max-width: 1024px) {
+                        font-size: 16px;
+                    }
                 }
             }
 
@@ -166,6 +240,15 @@ useSeoMeta({
                     line-height: 130%;
                     font-family: var(--int);
                     color: #000;
+
+                    @media (max-width: 1024px) {
+                        font-size: 16px;
+                        max-width: 150px;
+                    }
+
+                    @media (max-width: 360px) {
+                        max-width: 100px;
+                    }
                 }
 
                 button {
@@ -182,6 +265,10 @@ useSeoMeta({
                     font-family: var(--int);
                     color: #fff;
 
+                    @media (max-width: 1024px) {
+                        font-size: 16px;
+                    }
+
                     &:hover {
                         background: linear-gradient(90deg, #462885 0.64%, #A021A7 100%);
                     }
@@ -196,6 +283,10 @@ useSeoMeta({
                 font-family: var(--int);
                 color: #000;
                 margin-bottom: 25px;
+
+                @media (max-width: 1024px) {
+                    font-size: 25px;
+                }
             }
 
             p,
@@ -208,6 +299,10 @@ useSeoMeta({
                 font-family: var(--int);
                 color: #000;
                 max-width: 489px;
+
+                @media (max-width: 1024px) {
+                    font-size: 16px;
+                }
             }
 
             a {
@@ -226,6 +321,10 @@ useSeoMeta({
     line-height: 130%;
     color: #000;
     max-width: 489px;
+
+    @media (max-width: 1024px) {
+        font-size: 16px;
+    }
 }
 
 .custom-checkbox input[type="checkbox"] {

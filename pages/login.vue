@@ -1,29 +1,65 @@
 <template>
     <div class="login w-100">
         <div class="login__left">
-            <div>
+            <div class="nex">
                 <h1>Авторизация</h1>
                 <input type="email" placeholder="Эл.почта" v-model="email">
                 <input type="password" placeholder="Пароль" v-model="password">
 
                 <div class="text-center">
-                    <button>Войти</button>
+                    <small>{{ error }}</small>
+                    <button @click="login()">Войти</button>
 
                     <span>Еще нет аккаунта? <NuxtLink to='/register'>Регистрация</NuxtLink></span>
                 </div>
             </div>
         </div>
         <div class="login__right">
-            <img src="@/assets/img/loginphoto.png" alt="" loading="lazy">
+            <img src="@/assets/img/loginphoto.png" class="img-fluid" alt="" loading="lazy">
         </div>
     </div>
 </template>
 <script>
+import global from '~/mixins/global';
+import axios from 'axios';
 export default {
+    mixins: [global],
     data() {
         return {
             email: '',
             password: '',
+            pathUrl: 'https://studynow.kz',
+            error: '',
+        }
+    },
+    methods: {
+        login() {
+            const path = `${this.pathUrl}/api/main/authorization`
+            const csrf = this.getCSRFToken()
+
+            axios.defaults.headers.common['X-CSRFToken'] = csrf;
+            axios
+                .post(path, { username: this.email, password: this.password })
+                .then((res) => {
+
+
+
+                    document.cookie = `Authorization=${res.data.token}; expires=Fri, 31 Dec 2023 23:59:59 GMT; path=/`;
+                    localStorage.setItem('accountType', res.data.redirect_url)
+                    if (res.data.redirect_url == 'buyer-account') {
+                        window.location.href = '/'
+                    }
+                    if (res.data.redirect_url == 'seller-account') {
+                        window.location.href = '/seller-account'
+                    }
+
+
+                    console.log(res)
+                })
+                .catch((error) => {
+                    console.log(error);
+                    this.error = error.response.data.non_field_errors.toString()
+                });
         }
     }
 }
@@ -40,6 +76,11 @@ useSeoMeta({
 .login {
     display: flex;
 
+    @media (max-width: 1024px) {
+        flex-direction: column-reverse;
+        justify-content: center;
+    }
+
     .login__left {
         background: #fff;
         box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.10);
@@ -48,6 +89,31 @@ useSeoMeta({
 
         display: flex;
         align-items: center;
+
+        @media (max-width: 1600px) {
+            padding: 50px;
+        }
+
+        .nex {
+            width: 100%;
+        }
+
+        @media (max-width: 1024px) {
+            background: transparent;
+            box-shadow: none;
+            justify-content: center;
+            padding: 45px 20px;
+            align-items: flex-start;
+        }
+
+        small {
+            //  margin-bottom: 20px;
+            text-align: left !important;
+            display: block;
+            color: red;
+            font-family: var(--int);
+            font-size: 14px;
+        }
 
         input {
             display: block;
@@ -73,6 +139,12 @@ useSeoMeta({
             font-family: var(--int);
             color: #000;
             margin-bottom: 40px;
+
+            @media (max-width: 1024px) {
+                text-align: center;
+                font-size: 40px;
+                margin-bottom: 20px;
+            }
         }
 
         .text-center {
@@ -147,6 +219,17 @@ useSeoMeta({
         align-items: center;
         justify-content: center;
         width: 100%;
+
+        @media (max-width: 1024px) {
+            padding: 50px 20px 0;
+        }
+
+        img {
+            @media (max-width: 1024px) {
+                max-width: 236px;
+                max-width: 289px;
+            }
+        }
     }
 }
 

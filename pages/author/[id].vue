@@ -3,14 +3,16 @@
 
         <prevPage />
 
-        <h1>Анна Скобина</h1>
+        <h1 v-if="author.user">{{ author.user.first_name }}</h1>
 
 
         <div class="author__desc">
-            <img src="@/assets/img/avatar.png" alt="" loading="lazy">
+            <div class="avatar">
+                <img :src="author.photo" alt="" loading="lazy">
+            </div>
 
-            <div>
-                <div v-html="description"></div>
+            <div v-if="author.description">
+                <div v-html="author.description" class="description"></div>
             </div>
         </div>
 
@@ -19,23 +21,29 @@
             <h1>Курсы автора</h1>
 
             <div class="author__items">
-                <div class="author__item">
-                    <img src="@/assets/img/sales1.png" />
-                    <h2>Курсы визажиста «Make-up с нуля»</h2>
-                    <p>Погрузись в мир красоты с курсом от профессионалов</p>
+                <div class="author__item" v-for="item in products" :key="item.id">
+                    <img :src="item.add_image[0].image" />
+                    <h2>{{ item.name }}</h2>
+                    <p>{{ item.short_description }}</p>
 
-                    <ul class="dot-list">
-                        <li>10 видеоуроков</li>
-                        <li>3 эксперта</li>
-                        <li>Быстрая обратная связь с разбором ошибок</li>
+                    <ul class="dot-list" v-if="item.key_features">
+                        <li v-for="(feature, index) in item.key_features.split('\r\n').slice(0, 3)" :key="index">{{ feature
+                        }}
+                        </li>
                     </ul>
 
                     <div class="price">
-                        <h3>13 000 ₸</h3>
+                        <span v-if="item.discount > 0">
+                            {{ item.price.toLocaleString() + ' ₸' }}
+                            <img src="@/assets/img/disc.svg" alt="" loading="lazy">
+                        </span>
+                        <h3 v-if="item.discount > 0">{{ (Math.floor(item.price - ((item.price * item.discount) /
+                            100))).toLocaleString() + ' ₸' }}</h3>
+                        <h3 v-else>{{ item.price == 0 ? 'Бесплатно' : item.price.toLocaleString() + ' ₸' }}</h3>
                     </div>
 
                     <div class="buttons">
-                        <NuxtLink to="/product">
+                        <NuxtLink :to="'/product/' + item.id">
                             Подробнее
                         </NuxtLink>
                         <NuxtLink to="/">
@@ -43,47 +51,43 @@
                         </NuxtLink>
                     </div>
                 </div>
-                <div class="author__item">
-                    <img src="@/assets/img/sales1.png" />
-                    <h2>Курсы визажиста «Make-up с нуля»</h2>
-                    <p>Погрузись в мир красоты с курсом от профессионалов</p>
 
-                    <ul class="dot-list">
-                        <li>10 видеоуроков</li>
-                        <li>3 эксперта</li>
-                        <li>Быстрая обратная связь с разбором ошибок</li>
-                    </ul>
-
-                    <div class="price">
-                        <h3>13 000 ₸</h3>
-                    </div>
-
-                    <div class="buttons">
-                        <NuxtLink to="/product">
-                            Подробнее
-                        </NuxtLink>
-                        <NuxtLink to="/">
-                            Купить
-                        </NuxtLink>
-                    </div>
-                </div>
             </div>
         </div>
     </div>
 </template>
 <script>
+import global from '~/mixins/global';
+import axios from 'axios';
 export default {
+    mixins: [global],
     data() {
         return {
-            description: 'Меня зовут Анна, и я — путешественница по миру знаний и навыков. Здесь я рада делиться с вами моими увлекательными и разнообразными курсами. Я верю в бесконечные возможности саморазвития и в то, что каждый из нас может стать лучше, осваивая новые области.'
+            productId: this.$route.params.id,
+            author: [],
+            pathUrl: 'https://studynow.kz',
+            products: [],
         }
     },
     methods: {
-        methods: {
-            goBack() {
-                this.prevPage = this.$nuxt.$router.go(-1); // Вернуться на предыдущий маршрут
-            },
-        },
+
+        getAuthor() {
+            const path = `${this.pathUrl}/api/seller/seller-this/${this.productId}`
+            axios
+                .get(path)
+                .then(response => {
+                    this.author = response.data
+                    this.products = response.data.products
+
+                })
+                .catch(error => {
+                    console.error(error)
+                })
+        }
+
+    },
+    mounted() {
+        this.getAuthor()
     }
 }
 </script >
@@ -99,9 +103,35 @@ useSeoMeta({
 .author {
     padding: 120px 110px 110px;
 
+    @media (max-width: 1600px) {
+        padding: 120px 50px 110px;
+    }
+
+    @media (max-width: 1024px) {
+        padding: 120px 20px 50px;
+    }
+
+    .description {
+        font-size: 20px;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 130%;
+        font-family: var(--int);
+        color: #000;
+        white-space: break-spaces;
+
+        @media (max-width: 1024px) {
+            font-size: 16px;
+        }
+    }
+
 
     .author__products {
         margin-top: 50px;
+
+        @media (max-width: 1024px) {
+            margin-top: 20px;
+        }
 
         h1 {
             font-size: 40px;
@@ -112,12 +142,26 @@ useSeoMeta({
             color: #000;
             margin-top: 10px;
             margin-bottom: 30px;
+
+            @media (max-width: 1024px) {
+                font-size: 24px;
+            }
         }
 
         .author__items {
-            display: flex;
-            flex-wrap: wrap;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
             gap: 50px;
+            grid-auto-flow: dense;
+
+            @media (max-width: 1600px) {
+                gap: 35px;
+                justify-content: center;
+            }
+
+            @media (max-width: 1024px) {
+                gap: 20px;
+            }
 
             .author__item {
                 padding: 20px;
@@ -128,6 +172,17 @@ useSeoMeta({
                 display: flex;
                 flex-direction: column;
 
+                @media (max-width: 1200px) {
+                    max-width: 100%;
+                    width: 100%;
+                    padding: 10px;
+                }
+
+                img {
+                    max-width: 100%;
+                }
+
+
                 h2 {
                     font-size: 20px;
                     font-style: normal;
@@ -137,6 +192,10 @@ useSeoMeta({
                     color: #000;
                     margin-top: 15px;
                     margin-bottom: 10px;
+
+                    @media (max-width: 1024px) {
+                        font-size: 16px;
+                    }
                 }
 
                 p {
@@ -147,6 +206,10 @@ useSeoMeta({
                     font-weight: 400;
                     line-height: 130%;
                     font-family: var(--int);
+
+                    @media (max-width: 1024px) {
+                        font-size: 12px;
+                    }
                 }
 
 
@@ -162,6 +225,10 @@ useSeoMeta({
                     display: flex;
                     align-items: flex-start;
                     white-space: normal;
+
+                    @media (max-width: 1024px) {
+                        font-size: 12px;
+                    }
                 }
 
                 ul {
@@ -173,6 +240,11 @@ useSeoMeta({
                     margin-top: 10px;
 
                     gap: 10px;
+
+                    @media (max-width: 1024px) {
+                        padding: 0 20px;
+                        flex-direction: row-reverse;
+                    }
 
                     a {
                         padding: 10px 15px;
@@ -218,6 +290,10 @@ useSeoMeta({
                     justify-content: center;
                     gap: 0 28px;
 
+                    @media (max-width: 1024px) {
+                        flex-direction: row-reverse;
+                    }
+
                     span {
                         font-size: 12px;
                         font-style: normal;
@@ -240,6 +316,10 @@ useSeoMeta({
                         line-height: 130%;
                         font-family: var(--int);
                         color: #000;
+
+                        @media (max-width: 1024px) {
+                            font-size: 20px;
+                        }
                     }
                 }
             }
@@ -250,6 +330,28 @@ useSeoMeta({
         margin-top: 30px;
         display: flex;
         gap: 30px;
+
+        @media (max-width: 1024px) {
+            gap: 20px;
+            flex-direction: column;
+        }
+
+        .avatar {
+            //   border-radius: 50%;
+
+            img {
+                width: 16.563vw;
+                height: 16.563vw;
+                object-fit: cover;
+                border-radius: 50%;
+
+                @media (max-width: 1024px) {
+                    text-align: center;
+                    width: 150px;
+                    height: 150px;
+                }
+            }
+        }
     }
 
     h1 {
@@ -261,6 +363,10 @@ useSeoMeta({
         color: #000;
         margin-top: 10px;
         margin-bottom: 0;
+
+        @media (max-width: 1024px) {
+            font-size: 24px;
+        }
     }
 
 

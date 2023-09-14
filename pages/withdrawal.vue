@@ -8,7 +8,7 @@
                 <div class="text-center">
                     <h1>Вывод средств</h1>
 
-                    <div class="change">
+                    <div class="change" v-if="accountType == 'buyer'">
                         <NuxtLink to="/refill">Пополнение</NuxtLink>
                         <NuxtLink to="/withdrawal">Вывод</NuxtLink>
                     </div>
@@ -27,10 +27,16 @@
 
                 <p>2. Введите сумму, которую Вы хотите вывести с личного счета, и нажмите на кнопку “Вывести”. Вы будете
                     переадресованы на сайт платежной системы, где сможете завершить операцию.</p>
-
+                <div class="card">
+                    <input type="text" class="mb-3 w-100" name="card" id="card" v-model="cardNumber"
+                        :maxlength="cardNumberMaxLength" placeholder="Введите номер карты" @input="formatCardNumber"
+                        autocomplete="cc-number">
+                    <input type="text" class="mb-3 w-100" name="cardHolder" id="card" v-model="cardHolder"
+                        placeholder="Введите владельца карты" autocomplete="cc-name">
+                </div>
                 <div class="send">
                     <input type="number" v-model="count" placeholder="Введите сумму">
-                    <button>Вывести</button>
+                    <button ref="outBtn" @click="outMoney">Вывести</button>
                 </div>
 
                 <div class="summ">
@@ -45,17 +51,84 @@
     </div>
 </template>
 <script>
+import global from '~/mixins/global';
+import axios from 'axios';
 export default {
+    mixins: [global],
     data() {
         return {
             count: null,
+            pathUrl: 'https://studynow.kz',
+            cardNumber: '',
+            cardHolder: '',
+            cardNumberMaxLength: 19,
+            accountType: '',
+            checked: false,
         }
     },
     methods: {
-        goBack() {
-            this.prevPage = this.$nuxt.$router.go(-1); // Вернуться на предыдущий маршрут
+        outMoney() {
+            const token = this.getAuthorizationCookie()
+            const csrf = this.getCSRFToken()
+            const path = `${this.pathUrl}/api/money/pay-return`
+            axios.defaults.headers.common['Authorization'] = `Token ${token}`;
+            axios.defaults.headers.common['X-CSRFToken'] = csrf;
+            this.$refs.outBtn.innerHTML = 'ОЖИДАЙТЕ'
+
+            axios
+                .post(path, {
+                    amount: this.count,
+                    card_number: this.cardNumber.replace(/\s/g, ''),
+                    cardholder: this.cardHolder
+                })
+                .then(response => {
+                    console.log(response)
+                    if (response.status == 200) {
+                        this.$refs.outBtn.innerHTML = 'УСПЕШНО'
+                    }
+                    if (response.status == 228) {
+                        this.$refs.outBtn.innerHTML = response.data.error_msg
+                    }
+
+                })
+                .catch(error => {
+                    console.error(error)
+                    this.$refs.outBtn.innerHTML = 'ВЫВЕСТИ'
+                })
         },
+        formatCardNumber() {
+            // Удаляем все символы, кроме цифр
+            this.cardNumber = this.cardNumber.replace(/\D/g, '');
+
+            // Добавляем разделитель каждые 4 символа
+            this.cardNumber = this.cardNumber.replace(/(.{4})/g, '$1 ');
+
+            // Обрезаем карточный номер до максимальной длины
+            this.cardNumber = this.cardNumber.slice(0, this.cardNumberMaxLength);
+        }
     },
+    mounted() {
+        const accType = localStorage.getItem('accountType')
+        if (accType !== 'buyer-account' && accType !== 'seller-account') {
+            window.location.href = '/login'
+        }
+        if (accType == 'buyer-account') {
+            this.accountType = 'buyer'
+
+        }
+        else if (accType == 'seller-account') {
+            this.accountType = 'seller'
+        }
+        else {
+            return
+        }
+
+    },
+    watch: {
+        cardNumber(newCardNumber) {
+            this.cardHolder = this.cardNumberToHolderMapping[newCardNumber] || "";
+        }
+    }
 
 }
 </script>
@@ -68,8 +141,32 @@ useSeoMeta({
 })
 </script>
 <style lang="scss" scoped>
+.card {
+    background: 0;
+    border: 0;
+
+    input {
+        background: transparent;
+        border: 2px solid #000;
+        padding: 10px 15px;
+        border-radius: 10px;
+
+        font-size: 18px;
+        font-family: var(--int);
+        color: #000;
+    }
+}
+
 .withdrawal {
     padding: 120px 110px 170px;
+
+    @media (max-width: 1600px) {
+        padding: 125px 50px 110px;
+    }
+
+    @media (max-width: 1024px) {
+        padding: 125px 20px 50px;
+    }
 
     .withdrawal__block {
         display: flex;
@@ -82,6 +179,10 @@ useSeoMeta({
             background: #FFF;
             box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.10);
             padding: 40px;
+
+            @media (max-width: 1024px) {
+                padding: 20px;
+            }
 
             .change {
                 display: flex;
@@ -99,6 +200,10 @@ useSeoMeta({
                     font-weight: 400;
                     line-height: 110%;
                     font-family: var(--int);
+
+                    @media (max-width: 1024px) {
+                        font-size: 18px;
+                    }
                 }
 
                 a:first-child {
@@ -124,6 +229,10 @@ useSeoMeta({
                 flex-wrap: wrap;
                 gap: 10px;
 
+                @media (max-width: 1024px) {
+                    justify-content: center;
+                }
+
                 .active {
                     color: #fff;
                     background: #000;
@@ -142,6 +251,10 @@ useSeoMeta({
                     color: #000;
                     font-family: var(--int);
                     transition: all .3s ease;
+
+                    @media (max-width: 1024px) {
+                        font-size: 16px;
+                    }
                 }
             }
 
@@ -163,6 +276,15 @@ useSeoMeta({
                     line-height: 130%;
                     font-family: var(--int);
                     color: #000;
+
+                    @media (max-width: 1024px) {
+                        font-size: 16px;
+                        max-width: 150px;
+                    }
+
+                    @media (max-width: 360px) {
+                        max-width: 100px;
+                    }
                 }
 
                 button {
@@ -179,6 +301,10 @@ useSeoMeta({
                     font-family: var(--int);
                     color: #fff;
 
+                    @media (max-width: 1024px) {
+                        font-size: 16px;
+                    }
+
                     &:hover {
                         background: linear-gradient(90deg, #462885 0.64%, #A021A7 100%);
                     }
@@ -193,6 +319,10 @@ useSeoMeta({
                 font-family: var(--int);
                 color: #000;
                 margin-bottom: 25px;
+
+                @media (max-width: 1024px) {
+                    font-size: 25px;
+                }
             }
 
             p,
@@ -205,6 +335,10 @@ useSeoMeta({
                 font-family: var(--int);
                 color: #000;
                 max-width: 489px;
+
+                @media (max-width: 1024px) {
+                    font-size: 16px;
+                }
             }
 
             a {
@@ -222,6 +356,10 @@ useSeoMeta({
     line-height: 130%;
     color: #000;
     max-width: 489px;
+
+    @media (max-width: 1024px) {
+        font-size: 16px;
+    }
 }
 
 .custom-checkbox input[type="checkbox"] {

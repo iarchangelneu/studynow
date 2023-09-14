@@ -6,41 +6,26 @@
 
         <div class="complete__body">
             <div class="cart">
-                <div class="cart__item">
-                    <img src="@/assets/img/cart2.png" alt="" loading="lazy">
+                <div class="cart__item" v-for="item in cart" :key="item.id">
+                    <img :src="pathUrl + '/api' + item.products.add_image[0].image" alt="" loading="lazy">
 
                     <div>
-                        <h2>Курс «Блюда высокой кухни со всех стран»</h2>
-                        <h2>50 490 ₸</h2>
-                        <div class="text-right">
-                            <img src="@/assets/img/trashbig.svg" alt="" style="cursor: pointer;">
+                        <h2>{{ item.products.name }}</h2>
+                        <div class="price">
+                            <h3 v-if="item.products.discount > 0">
+                                {{ item.products.price.toLocaleString() + ' ₸' }}
+                                <img src="@/assets/img/disc.svg" alt="">
+                            </h3>
+                            <h2 v-if="item.products.discount > 0">
+                                {{ (Math.floor(item.products.price - ((item.products.price * item.products.discount) /
+                                    100))).toLocaleString() + ' ₸'
+                                }}</h2>
+                            <h2 v-else>{{ item.products.price == 0 ? 'Бесплатно' : item.products.price.toLocaleString() +
+                                '₸' }}</h2>
                         </div>
-                    </div>
-                </div>
-                <div class="cart__item">
-                    <img src="@/assets/img/cart2.png" alt="" loading="lazy">
-
-                    <div>
-                        <h2>Курс «Блюда высокой кухни со всех стран»</h2>
-                        <h3>
-                            15 000 ₸
-                            <img src="@/assets/img/disc.svg" alt="">
-                        </h3>
-                        <h2>13 000 ₸</h2>
                         <div class="text-right">
-                            <img src="@/assets/img/trashbig.svg" alt="" style="cursor: pointer;">
-                        </div>
-                    </div>
-                </div>
-
-                <div class="cart__item">
-                    <img src="@/assets/img/cart2.png" alt="" loading="lazy">
-
-                    <div>
-                        <h2>Курс «Блюда высокой кухни со всех стран»</h2>
-                        <h2>50 490 ₸</h2>
-                        <div class="text-right">
-                            <img src="@/assets/img/trashbig.svg" alt="" style="cursor: pointer;">
+                            <img src="@/assets/img/trashbig.svg" @click="deleteFromCart(item.id)" alt=""
+                                style="cursor: pointer;">
                         </div>
                     </div>
                 </div>
@@ -49,23 +34,104 @@
             <div class="complete__block">
                 <h1>Подтверждение покупки</h1>
 
-                <h2>Количество курсов: 3</h2>
-                <h2>Итоговая сумма: 84 080 ₸ </h2>
+                <h2>Количество курсов: {{ cart.length }}</h2>
+                <h2>Итоговая сумма: {{ formatPrice(calculateTotal()) }} ₸ </h2>
 
                 <p>Сумма будет списана с вашего счета. Товары отобразятся во вкладке «Мои покупки» в Вашем Личном кабинете.
                 </p>
 
                 <div class="text-center">
-                    <button>Подтвердить покупку</button>
+                    <button ref="buyBtn" @click="buyProduct()">Подтвердить покупку</button>
                 </div>
             </div>
         </div>
     </div>
 </template>
 <script>
+import global from '~/mixins/global';
+import axios from 'axios'
 export default {
+    mixins: [global],
     data() {
-        return {}
+        return {
+            cart: [],
+        }
+    },
+    methods: {
+        buyProduct() {
+            const token = this.getAuthorizationCookie()
+            const path = `${this.pathUrl}/api/buyer/placed-basket`
+            axios.defaults.headers.common['Authorization'] = `Token ${token}`;
+            this.$refs.buyBtn.innerHTML = 'Оформляем'
+            axios
+                .get(path)
+                .then(response => {
+                    console.log(response)
+                    this.getCart()
+                    if (response.status == 204) {
+                        this.$refs.buyBtn.innerHTML = 'Недостаточно средств'
+                    }
+                    if (response.status == 201) {
+                        // this.getBuyer()
+                        this.$refs.buyBtn.innerHTML = 'Оплата прошла успешно'
+
+                        setTimeout(() => {
+                            window.location.href = '/catalog'
+                        }, 3);
+                    }
+                })
+                .catch(error => {
+                    console.error(error)
+                })
+
+        },
+        calculateTotal() {
+            let total = 0;
+
+            this.cart.forEach(item => {
+                const { price, discount } = item.products;
+                const discountedPrice = price * (1 - discount / 100); // Преобразуем скидку в коэффициент
+                total += discountedPrice * item.amount;
+            });
+
+            return total;
+        },
+        formatPrice(price) {
+            return price.toLocaleString('ru-RU');
+        },
+        deleteFromCart(id) {
+            const token = this.getAuthorizationCookie()
+            const csrf = this.getCSRFToken()
+            const path = `${this.pathUrl}/api/buyer/delete-product-basket/${id}`
+            axios.defaults.headers.common['Authorization'] = `Token ${token}`;
+            axios.defaults.headers.common['X-CSRFToken'] = csrf;
+            axios
+                .put(path)
+                .then(response => {
+                    console.log(response)
+                    this.getCart()
+                })
+                .catch(error => {
+                    console.error(error)
+                })
+        },
+        getCart() {
+            const token = this.getAuthorizationCookie()
+            const path = `${this.pathUrl}/api/buyer/all-product-basket`;
+            axios.defaults.headers.common['Authorization'] = `Token ${token}`;
+
+            axios
+                .get(path)
+                .then(response => {
+                    this.cart = response.data
+                })
+                .catch(error => {
+                    console.error(error)
+                })
+        },
+    },
+    mounted() {
+        this.getCart()
     }
 }
 </script>
@@ -82,17 +148,37 @@ useSeoMeta({
     padding: 120px 110px 150px;
 
 
+    @media (max-width: 1600px) {
+        padding: 125px 50px 110px;
+    }
+
+    @media (max-width: 1024px) {
+        padding: 125px 20px 50px;
+    }
+
 
     .complete__body {
         display: flex;
         justify-content: space-between;
         align-items: flex-start;
 
+        @media (max-width: 1400px) {
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 50px;
+            width: 100%;
+        }
+
         .complete__block {
             border-radius: 10px;
             background: var(--White, #FFF);
             box-shadow: 0px 0px 15px 0px rgba(0, 0, 0, 0.10);
             padding: 20px 40px 34px;
+
+            @media (max-width: 1024px) {
+                padding: 15px;
+            }
 
             h1 {
                 text-align: center;
@@ -102,6 +188,10 @@ useSeoMeta({
                 line-height: 130%;
                 font-family: var(--int);
                 margin-bottom: 40px;
+
+                @media (max-width: 1024px) {
+                    font-size: 20px;
+                }
             }
 
             h2 {
@@ -112,6 +202,10 @@ useSeoMeta({
                 font-family: var(--int);
                 color: #000;
                 margin-bottom: 20px;
+
+                @media (max-width: 1024px) {
+                    font-size: 16px;
+                }
             }
 
             p {
@@ -123,6 +217,10 @@ useSeoMeta({
                 color: #000;
                 margin-bottom: 40px;
                 max-width: 520px;
+
+                @media (max-width: 1024px) {
+                    font-size: 14px;
+                }
             }
 
             button {
@@ -138,6 +236,11 @@ useSeoMeta({
                 font-family: var(--int);
                 color: #fff;
 
+                @media (max-width: 1024px) {
+                    font-size: 16px;
+                    padding: 10px 30px;
+                }
+
                 &:hover {
                     background: linear-gradient(90deg, #462885 0.64%, #A021A7 100%);
                 }
@@ -148,18 +251,56 @@ useSeoMeta({
             display: flex;
             flex-direction: column;
             gap: 50px;
+            width: 80%;
+
+            @media (max-width: 1400px) {
+                width: 100%;
+                justify-content: center;
+            }
+
+            @media (max-width: 1024px) {
+                gap: 20px;
+            }
         }
 
         .cart__item {
             display: flex;
             gap: 30px;
 
+            width: 500px;
+
+            @media (max-width: 1400px) {
+                width: 100%;
+                justify-content: space-evenly;
+            }
+
+            @media (max-width: 1024px) {
+                flex-direction: column;
+                gap: 20px;
+            }
+
             img {
                 max-width: 220px;
                 max-height: 144px;
+
+                @media (max-width: 1024px) {
+                    max-width: 100%;
+                    height: auto;
+                }
+            }
+
+            .price {
+                @media (max-width: 1024px) {
+                    display: flex;
+                    gap: 10px;
+                    align-items: center;
+                }
+
             }
 
             div {
+                width: 100%;
+
                 h2 {
                     font-size: 20px;
                     font-style: normal;
@@ -169,7 +310,9 @@ useSeoMeta({
                     color: #000;
                     margin-bottom: 10px;
 
-
+                    @media (max-width: 1024px) {
+                        font-size: 16px;
+                    }
                 }
 
                 h3 {
@@ -181,6 +324,11 @@ useSeoMeta({
                     color: #000;
                     position: relative;
                     margin-bottom: 13px;
+
+                    @media (max-width: 1024px) {
+                        margin: 0;
+                        font-size: 14px;
+                    }
 
                     img {
                         position: absolute;

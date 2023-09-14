@@ -7,12 +7,12 @@
                 </NuxtLink>
 
                 <div class="headermen">
-                    <img src="@/assets/img/cart.svg" alt="" loading="lazy" @click="cartOpen = !cartOpen"
-                        style="cursor: pointer;">
-                    <NuxtLink to="/refill">
+                    <img v-if="accountUrl == '/buyer-account'" src="@/assets/img/cart.svg" alt="" loading="lazy"
+                        @click="cartOpen = !cartOpen, getCart()" style="cursor: pointer;">
+                    <NuxtLink to="/withdrawal">
                         <img src="@/assets/img/cash.svg" alt="" loading="lazy">
                     </NuxtLink>
-                    <NuxtLink to="/seller-account">
+                    <NuxtLink :to="this.accountUrl">
                         <img src="@/assets/img/acc.svg" alt="" loading="lazy">
                     </NuxtLink>
 
@@ -38,7 +38,9 @@
                         <NuxtLink to="/terms">Пользовательское соглашение</NuxtLink>
                         <NuxtLink to="/polytics">Политика конфиденциальности</NuxtLink>
                     </div>
-                    <NuxtLink to="/login" class="reg">Вход/Регистрация</NuxtLink>
+                    <NuxtLink to="/login" class="reg" v-if="accountType == ''">Вход/Регистрация</NuxtLink>
+                    <span v-if="userBalance !== null">{{ userBalance == null ? '0 ₸' : userBalance.toLocaleString()
+                        + ' ₸' }}</span>
                 </div>
             </div>
         </div>
@@ -52,24 +54,21 @@
         </div>
 
         <div class="cart__body">
-            <div class="cart__item">
-                <img src="@/assets/img/cart.png" alt="" loading="lazy">
-                <h3>Блюда высокой кухни со всех стран</h3>
+            <div class="cart__items">
+                <div class="cart__item" v-for="item in cart" :key="item.id">
+                    <img :src="pathUrl + '/api' + item.products.add_image[0].image" alt="" loading="lazy">
+                    <h3>{{ item.products.name }}</h3>
 
-                <div>
-                    <img src="@/assets/img/trash.svg" alt="" loading="lazy" style="cursor: pointer;">
+                    <div class="w-100">
+                        <img src="@/assets/img/trash.svg" @click="deleteFromCart(item.id)" alt="" loading="lazy"
+                            style="cursor: pointer;">
 
-                    <small>11 540 ₸</small>
-                </div>
-            </div>
-            <div class="cart__item">
-                <img src="@/assets/img/cart.png" alt="" loading="lazy">
-                <h3>Блюда высокой кухни со всех стран</h3>
-
-                <div>
-                    <img src="@/assets/img/trash.svg" alt="" loading="lazy" style="cursor: pointer;">
-
-                    <small>11 540 ₸</small>
+                        <small v-if="item.products.discount > 0">{{ (Math.floor(item.products.price - ((item.products.price
+                            * item.products.discount) /
+                            100))).toLocaleString() + ' ₸' }} </small>
+                        <small v-else>{{ item.products.price == 0 ? 'Бесплатно' : item.products.price.toLocaleString() +
+                            '₸' }}</small>
+                    </div>
                 </div>
             </div>
 
@@ -80,13 +79,96 @@
     </div>
 </template>
 <script>
+import global from '~/mixins/global';
+import axios from 'axios'
 export default {
+    mixins: [global],
     data() {
         return {
             menuOpen: false,
             cartOpen: false,
             hideHeaderOnPages: ['login', 'register'],
+            pathUrl: 'https://studynow.kz',
+            userBalance: null,
+            accountType: '',
+            cart: [],
         }
+    },
+    methods: {
+        getCart() {
+            const token = this.getAuthorizationCookie()
+            const path = `${this.pathUrl}/api/buyer/all-product-basket`;
+            axios.defaults.headers.common['Authorization'] = `Token ${token}`;
+
+            axios
+                .get(path)
+                .then(response => {
+                    this.cart = response.data
+                })
+                .catch(error => {
+                    console.error(error)
+                })
+        },
+        deleteFromCart(id) {
+            const token = this.getAuthorizationCookie()
+            const csrf = this.getCSRFToken()
+            const path = `${this.pathUrl}/api/buyer/delete-product-basket/${id}`
+            axios.defaults.headers.common['Authorization'] = `Token ${token}`;
+            axios.defaults.headers.common['X-CSRFToken'] = csrf;
+            axios
+                .put(path)
+                .then(response => {
+                    console.log(response)
+                    this.getCart()
+                })
+                .catch(error => {
+                    console.error(error)
+                })
+        },
+        getBuyer() {
+            const token = this.getAuthorizationCookie()
+            const path = `${this.pathUrl}/api/buyer/buyer-lk`;
+            axios.defaults.headers.common['Authorization'] = `Token ${token}`;
+            axios
+                .get(path)
+                .then(response => {
+                    this.userBalance = response.data.balance
+
+                })
+                .catch(error => console.log(error));
+        },
+        getSeller() {
+            const token = this.getAuthorizationCookie()
+            const path = `${this.pathUrl}/api/seller/seller-lk`;
+            axios.defaults.headers.common['Authorization'] = `Token ${token}`;
+            axios
+                .get(path)
+                .then(response => {
+                    this.userBalance = response.data.balance
+
+                })
+                .catch(error => console.log(error));
+        },
+
+    },
+    mounted() {
+        const accType = localStorage.getItem('accountType')
+        if (accType == 'buyer-account') {
+            this.getBuyer()
+            this.getCart()
+            this.accountType = 'buyer'
+            setInterval(() => {
+                this.cartLength = localStorage.getItem('cartLength')
+            }, 1);
+        }
+        else if (accType == 'seller-account') {
+            this.getSeller()
+            this.accountType = 'seller'
+        }
+        else {
+            console.log('not authorized')
+        }
+
     }
 }
 </script>
@@ -109,8 +191,26 @@ export default {
     transform: scaleY(0);
     opacity: 0;
 
+    @media (max-width: 1600px) {
+        width: 40%;
+    }
+
+    @media (max-width: 1400px) {
+        width: 50%;
+    }
+
+    @media (max-width: 1024px) {
+        width: 100%;
+        padding: 20px;
+    }
+
     .cart__body {
         margin-top: 75px;
+
+        @media (max-width: 1024px) {
+
+            width: 100%;
+        }
 
         a {
             margin-top: 40px;
@@ -128,18 +228,37 @@ export default {
             font-family: var(--int);
             color: #fff;
 
+            @media (max-width: 1024px) {
+                font-size: 16px;
+                padding: 10px 30px;
+            }
+
             &:hover {
                 background: linear-gradient(90deg, #462885 0.64%, #A021A7 100%);
             }
+        }
+
+        .cart__items {
+            max-height: 550px;
+            overflow-y: auto;
         }
 
         .cart__item {
             display: flex;
             margin-bottom: 20px;
 
+            @media (max-width: 1024px) {
+                width: 100%;
+                justify-content: space-between;
+            }
+
             img {
                 max-width: 176px;
                 max-height: 122px;
+
+                @media (max-width: 1024px) {
+                    max-width: 120px;
+                }
             }
 
             &:last-child {
@@ -183,6 +302,11 @@ export default {
         line-height: normal;
         font-family: var(--int);
         color: #000;
+        margin: 0;
+
+        @media (max-width: 1024px) {
+            font-size: 25px;
+        }
     }
 }
 
@@ -191,8 +315,15 @@ header {
     display: flex;
     justify-content: center;
     position: fixed;
-    padding: 25px 378px 0;
+    padding: 25px 19.688vw 0;
     width: 100%;
+
+    @media (max-width: 1024px) {
+        padding: 25px 20px 0;
+    }
+
+
+
 
     .pcheader {
         width: 100%;
@@ -204,6 +335,10 @@ header {
         padding: 12px 25px;
         position: relative;
         transition: all .3s ease;
+
+        @media (max-width: 1024px) {
+            padding: 12px 10px;
+        }
 
         .crap {
             display: flex;
@@ -217,6 +352,10 @@ header {
             align-items: center;
             gap: 0 30px;
             transition: all .3s ease;
+
+            @media (max-width: 380px) {
+                gap: 0 20px;
+            }
         }
 
         .headermenu {
@@ -234,10 +373,27 @@ header {
                 justify-content: space-between;
                 align-items: flex-start;
 
+                @media (max-width: 1024px) {
+                    flex-direction: column;
+                    padding: 15px;
+                    gap: 15px;
+                }
+
+                span {
+                    font-family: var(--int);
+                    color: #000;
+                    font-size: 16px;
+                    font-weight: 500;
+                }
+
                 div {
                     display: flex;
                     flex-direction: column;
                     gap: 25px;
+
+                    @media (max-width: 1024px) {
+                        gap: 15px;
+                    }
 
                     a {
                         text-decoration: none;
@@ -247,6 +403,10 @@ header {
                         line-height: 130%;
                         font-family: var(--int);
                         color: #000;
+
+                        @media (max-width: 1024px) {
+                            font-size: 16px;
+                        }
                     }
                 }
 

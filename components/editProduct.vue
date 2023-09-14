@@ -29,7 +29,7 @@
                 <div class="discount">
                     <div>
                         <label for="name">Введите цену</label>
-                        <input type="number" id="name" name="name" placeholder="Цена за товар">
+                        <input type="number" id="name" name="name" placeholder="Цена за товар" v-model="price">
                     </div>
                     <div>
                         <label for="name">Скидка, %</label>
@@ -66,30 +66,38 @@
                 </div>
                 <div>
                     <label for="tabs">Описание товара</label>
-                    <textarea name="" id="" cols="30" rows="10" v-model="description">
+                    <textarea name="" id="" cols="30" rows="10" v-model="description"></textarea>
 
-                </textarea>
                 </div>
             </div>
         </div>
 
         <div class="text-center">
-            <button>Опубликовать товар</button>
+            <button ref="save" @click="submitForm()">Сохранить</button>
         </div>
     </div>
 </template>
 <script>
+import axios from 'axios';
+import global from '~/mixins/global';
 export default {
+    mixins: [global],
+    props: {
+        productId: Number,
+    },
     data() {
         return {
+            pathUrl: 'https://studynow.kz',
             selectedCategory: null,
             discount: 0,
+            price: 0,
             name: '',
             shortDesc: '',
             description: '',
             alert: 'Перетащите файлы сюда или откройте вручную',
             uploadedImages: [],
             courseFeaturesText: '',
+            product: [],
             categories: [
                 { id: 1, name: "IT" },
                 { id: 2, name: "Красота и здоровье" },
@@ -114,6 +122,66 @@ export default {
     },
 
     methods: {
+        async submitForm() {
+            this.$refs.save.innerHTML = 'Сохраняем'
+            const path = `${this.pathUrl}/api/seller/seller-lk/edit-product/${this.productId}`
+            const csrf = this.getCSRFToken()
+            const formData = new FormData();
+
+            const filesToUpload = this.uploadedImages
+                .filter(item => item.file instanceof File)
+                .map(item => item.file);
+
+
+            formData.append('name', this.name);
+            formData.append('category', this.selectedCategory);
+            formData.append('price', this.price);
+            formData.append('discount', this.discount);
+            filesToUpload.forEach(file => {
+                formData.append('add_image', file);
+            });
+            formData.append('description', this.description);
+            formData.append('short_description', this.shortDesc);
+            formData.append('key_features', this.courseFeaturesText);
+
+
+
+            try {
+                axios.defaults.headers.common['X-CSRFToken'] = csrf;
+                const response = await axios.put(path, formData);
+
+                console.log('Форма успешно отправлена', response);
+                if (response.status == 200) {
+                    this.$refs.save.innerHTML = 'Товар успешно сохранен'
+                    // window.location.href = '/seller-account'
+                }
+            } catch (error) {
+                console.error('Ошибка при отправке формы', error);
+
+                if (error.message) {
+                    this.$refs.save.innerHTML = error.message
+                }
+
+            }
+        },
+        getProduct() {
+            const path = `${this.pathUrl}/api/seller/seller-lk/edit-product/${this.productId}`
+            axios
+                .get(path)
+                .then(response => {
+                    this.product = response.data
+                    this.courseFeaturesText = response.data.key_features
+                    this.description = response.data.description
+                    this.name = response.data.name
+                    this.discount = response.data.discount
+                    this.price = response.data.price
+                    this.shortDesc = response.data.short_description
+                    this.selectedCategory = response.data.category
+                })
+                .catch(error => {
+                    console.error(error)
+                })
+        },
         handleKeyDown(event) {
             if (event.key === 'Backspace' && !this.courseFeaturesText) {
                 event.preventDefault(); // Предотвращаем удаление последней строки
@@ -187,7 +255,10 @@ export default {
             // Проксировать клик на скрытый input для выбора файлов
             this.$refs.fileInput.click();
         },
-    }
+    },
+    mounted() {
+        this.getProduct()
+    },
 }
 </script>
 <script setup>
@@ -226,6 +297,11 @@ useSeoMeta({
     gap: 20px;
     width: 100%;
 
+    @media (max-width: 1024px) {
+        flex-direction: column;
+        margin-top: 20px;
+    }
+
     label,
     input {
         display: block;
@@ -247,9 +323,19 @@ useSeoMeta({
         gap: 9px;
         margin-top: 20px;
 
+        .uploaded-image {
+            max-width: auto !important;
+            width: auto !important;
+        }
+
         img {
-            max-width: 259px;
-            max-height: 177px;
+            width: 259px;
+            height: 177px;
+
+            @media (max-width: 1024px) {
+                width: 165px;
+                height: 110px;
+            }
         }
     }
 
@@ -271,6 +357,11 @@ useSeoMeta({
 
     .course__left {
         max-width: 527px;
+
+        @media (max-width: 1024px) {
+            max-width: 100%;
+            width: 100%;
+        }
 
         .highlight {
             border: 2px dashed green !important;
@@ -313,6 +404,11 @@ useSeoMeta({
             margin-bottom: 20px;
             max-width: 527px;
 
+            @media (max-width: 1024px) {
+                max-width: 100%;
+                width: 100%;
+            }
+
             &:last-child {
                 margin-bottom: 0;
             }
@@ -321,14 +417,25 @@ useSeoMeta({
         .discount {
             display: flex;
             gap: 10px;
+
+            div {
+                flex: 1;
+            }
         }
 
         .select {
             display: flex;
             align-items: flex-end;
+            flex-wrap: wrap;
             gap: 10px;
 
+            @media (max-width: 1024px) {
+                flex-direction: column;
+                align-items: flex-start;
+            }
+
             span {
+                flex: 1;
                 padding: 11px 10px;
                 margin-top: 4px;
                 border: 2px solid #000;
@@ -336,6 +443,7 @@ useSeoMeta({
 
                 display: flex;
                 align-items: flex-start;
+                justify-content: space-between;
                 gap: 10px;
                 font-size: 16px;
                 font-style: normal;
@@ -343,6 +451,8 @@ useSeoMeta({
                 line-height: 130%;
                 font-family: var(--int);
                 color: #000;
+
+                @media (max-width: 1024px) {}
 
                 img {
                     cursor: pointer;
