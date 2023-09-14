@@ -3,9 +3,13 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   pages: true,
   modules: [
-    '@nuxt/image',
+    'nuxt-gtag',
   ],
- 
+
+  gtag: {
+    id: 'G-BHRYGK69JB'
+  },
+
   app: {
     head: {
       charset: 'utf-8',
@@ -31,10 +35,10 @@ export default defineNuxtConfig({
         {
           src: 'https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js'
         },
-        // {
-        //   src: '//code.jivo.ru/widget/Gc7HOcnFYx',
-        //   async: true,
-        // },   
+        {
+          src: '//code.jivo.ru/widget/rGi3UCjdjO',
+          async: true,
+        },   
       ]
     }
   }
