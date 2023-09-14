@@ -261,10 +261,6 @@ export default {
             const path = `${this.pathUrl}/api/seller/seller-lk/edit/`
             const csrf = this.getCSRFToken()
 
-            const user = {
-                first_name: this.name,
-                email: this.email,
-            };
             const formData = new FormData();
             formData.append('user.[first_name]', this.name);
             formData.append('user.[email]', this.email);

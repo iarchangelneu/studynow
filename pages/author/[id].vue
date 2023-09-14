@@ -46,8 +46,8 @@
                         <NuxtLink :to="'/product/' + item.id">
                             Подробнее
                         </NuxtLink>
-                        <NuxtLink to="/">
-                            Купить
+                        <NuxtLink @click="addToCart(item.id)" style="cursor: pointer;">
+                            {{ item.addToCartStatus || 'Купить' }}
                         </NuxtLink>
                     </div>
                 </div>
@@ -67,9 +67,33 @@ export default {
             author: [],
             pathUrl: 'https://studynow.kz',
             products: [],
+            addToCartStatus: '',
         }
     },
     methods: {
+        addToCart(id) {
+            const path = `${this.pathUrl}/api/buyer/add-product-basket`
+            const csrf = this.getCSRFToken()
+            axios.defaults.headers.common['X-CSRFToken'] = csrf;
+            axios
+                .post(path, {
+                    products: id,
+                    amount: 1,
+                })
+                .then(response => {
+                    const index = this.products.findIndex(item => item.id === id);
+                    if (response.status == 201) {
+                        // Присвоение значения напрямую
+                        this.products[index].addToCartStatus = 'Добавлен';
+                    } else {
+                        this.products[index].addToCartStatus = 'Ошибка';
+                    }
+                    console.log(response)
+                })
+                .catch(error => {
+                    console.error(error)
+                })
+        },
 
         getAuthor() {
             const path = `${this.pathUrl}/api/seller/seller-this/${this.productId}`
