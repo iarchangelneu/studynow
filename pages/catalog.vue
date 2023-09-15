@@ -144,7 +144,6 @@ export default {
                 .then(response => {
                     const index = this.catalog.results.findIndex(item => item.id === id);
                     if (response.status == 201) {
-                        // Присвоение значения напрямую
                         this.catalog.results[index].addToCartStatus = 'Добавлен';
                     } else {
                         this.catalog.results[index].addToCartStatus = 'Ошибка';
@@ -185,9 +184,9 @@ export default {
                 axios
                     .get(this.catalog.next)
                     .then(response => {
-                        // Добавляем новые продукты к существующим
                         this.catalog.results.push(...response.data.results);
                         this.catalog.next = response.data.next;
+                        this.$refs.showmore.innerHTML = 'Показать еще'
                     })
                     .catch(error => {
                         console.error(error);

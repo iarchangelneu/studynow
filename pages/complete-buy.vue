@@ -18,10 +18,10 @@
                             </h3>
                             <h2 v-if="item.products.discount > 0">
                                 {{ (Math.floor(item.products.price - ((item.products.price * item.products.discount) /
-                                    100))).toLocaleString() + ' ₸'
-                                }}</h2>
+                                                                100))).toLocaleString() + ' ₸'
+                                                                }}</h2>
                             <h2 v-else>{{ item.products.price == 0 ? 'Бесплатно' : item.products.price.toLocaleString() +
-                                '₸' }}</h2>
+                                                            '₸' }}</h2>
                         </div>
                         <div class="text-right">
                             <img src="@/assets/img/trashbig.svg" @click="deleteFromCart(item.id)" alt=""
@@ -90,7 +90,7 @@ export default {
 
             this.cart.forEach(item => {
                 const { price, discount } = item.products;
-                const discountedPrice = price * (1 - discount / 100); // Преобразуем скидку в коэффициент
+                const discountedPrice = price * (1 - discount / 100);
                 total += discountedPrice * item.amount;
             });
 

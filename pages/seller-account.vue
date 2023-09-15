@@ -52,7 +52,7 @@
                         <div>
                             <h1>{{ product.name }}</h1>
                             <small>{{ product.price == 0 ? 'Бесплатно' : (Math.floor(product.price - ((product.price *
-                                product.discount) / 100))).toLocaleString() + ' ₸' }}</small>
+                                                            product.discount) / 100))).toLocaleString() + ' ₸' }}</small>
                         </div>
 
 
@@ -77,8 +77,8 @@
                         <div>
                             <h1>{{ item.products.name }}</h1>
                             <small>{{ item.products.price == 0 ? 'Бесплатно' : (Math.floor(item.products.price -
-                                ((item.products.price *
-                                    item.products.discount) / 100))).toLocaleString() + ' ₸' }}</small>
+                                                            ((item.products.price *
+                                                            item.products.discount) / 100))).toLocaleString() + ' ₸' }}</small>
                         </div>
 
                         <div>
@@ -106,7 +106,7 @@
                 </div>
 
                 <div class="justify-content-end">
-                    <button @click="openChat(chat.id, chat.buyer.user.email)">Открыть чат</button>
+                    <button @click="openChat(chat.id, chat.buyer.user.first_name)">Открыть чат</button>
                 </div>
             </div>
         </div>
@@ -191,10 +191,8 @@ export default {
     computed: {
         avatarUrl() {
             if (this.avatar) {
-                // Используем URL объекта File, если avatar существует
                 return URL.createObjectURL(this.avatar);
             } else {
-                // Используем дефолтное изображение, если avatar не существует
                 return this.photo;
             }
         },
@@ -299,7 +297,6 @@ export default {
             formData.append('user.[first_name]', this.name);
             formData.append('user.[email]', this.email);
 
-            // Добавляем остальные данные
             formData.append('description', this.description);
             if (this.avatar == null) {
                 formData.append('photo', '');

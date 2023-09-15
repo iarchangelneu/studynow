@@ -43,7 +43,7 @@
 
                         <ul class="dot-list" v-if="item.key_features">
                             <li v-for="(feature, index) in item.key_features.split('\r\n').slice(0, 3)" :key="index">{{
-                                feature }}
+                                                            feature }}
                             </li>
                         </ul>
 
@@ -54,7 +54,7 @@
                             </span>
                             <h3 v-if="item.discount > 0">
                                 {{ (Math.floor(item.price - ((item.price * item.discount) / 100))).toLocaleString() + ' ₸'
-                                }}</h3>
+                                                                }}</h3>
                             <h3 v-else>{{ item.price == 0 ? 'Бесплатно' : item.price.toLocaleString() + ' ₸' }}</h3>
                         </div>
 
@@ -191,7 +191,7 @@
 
                         <ul class="dot-list" v-if="item.key_features">
                             <li v-for="(feature, index) in item.key_features.split('\r\n').slice(0, 3)" :key="index">{{
-                                feature }}
+                                                            feature }}
                             </li>
                         </ul>
 
@@ -202,7 +202,7 @@
                             </span>
                             <h3 v-if="item.discount > 0">
                                 {{ (Math.floor(item.price - ((item.price * item.discount) / 100))).toLocaleString() + ' ₸'
-                                }}</h3>
+                                                                }}</h3>
                             <h3 v-else>{{ item.price == 0 ? 'Бесплатно' : item.price.toLocaleString() + ' ₸' }}</h3>
                         </div>
 
@@ -358,7 +358,7 @@ export default {
                 .then(response => {
                     const index = this.discounts.findIndex(item => item.id === id);
                     if (response.status == 201) {
-                        // Присвоение значения напрямую
+
                         this.discounts[index].addToCartStatus = 'Добавлен';
                     } else {
                         this.discounts[index].addToCartStatus = 'Ошибка';
@@ -381,7 +381,6 @@ export default {
                 .then(response => {
                     const index = this.populars.findIndex(item => item.id === id);
                     if (response.status == 201) {
-                        // Присвоение значения напрямую
                         this.populars[index].addToCartStatus = 'Добавлен';
                     } else {
                         this.populars[index].addToCartStatus = 'Ошибка';

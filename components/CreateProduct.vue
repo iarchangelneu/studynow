@@ -172,7 +172,7 @@ export default {
         },
         handleKeyDown(event) {
             if (event.key === 'Backspace' && !this.courseFeaturesText) {
-                event.preventDefault(); // Предотвращаем удаление последней строки
+                event.preventDefault();
                 return;
 
             }
@@ -180,7 +180,7 @@ export default {
             const lines = this.courseFeaturesText.split('\n');
             if (lines.length >= 6 && event.key === 'Enter') {
                 event.preventDefault();
-                this.$refs.featuresList.style.borderColor = 'red' // Предотвращаем добавление новой строки после 6 строк
+                this.$refs.featuresList.style.borderColor = 'red'
                 return;
             }
         },
@@ -193,19 +193,16 @@ export default {
         },
         limitValue() {
             if (this.discount > 100) {
-                this.discount = 100; // Ограничиваем значение до 100
+                this.discount = 100;
             }
         },
         highlightDropArea(event) {
-            // Подсветить область при перетаскивании
             event.currentTarget.classList.add('highlight');
         },
         unhighlightDropArea(event) {
-            // Убрать подсветку области при завершении перетаскивания
             event.currentTarget.classList.remove('highlight');
         },
         handleDrop(event) {
-            // Обработать файлы, перетащенные на область
             event.preventDefault();
             this.unhighlightDropArea(event);
 
@@ -213,12 +210,10 @@ export default {
             this.processFiles(files);
         },
         handleFileInput() {
-            // Обработать выбранные файлы из инпута
             const files = this.$refs.fileInput.files;
             this.processFiles(files);
         },
         processFiles(files) {
-            // Проверить, что загруженные файлы - изображения
             const imageFiles = [];
             for (let i = 0; i < files.length; i++) {
                 if (files[i].type.startsWith('image/')) {
@@ -231,16 +226,13 @@ export default {
                 return;
             }
 
-            // Создать объекты для загруженных изображений и добавить их в массив
             imageFiles.forEach((file) => {
                 const imageUrl = URL.createObjectURL(file);
                 this.uploadedImages.push({ url: imageUrl, file });
             });
 
-            // Здесь можно добавить дополнительную логику обработки загруженных изображений
         },
         openFileInput() {
-            // Проксировать клик на скрытый input для выбора файлов
             this.$refs.fileInput.click();
         },
     }

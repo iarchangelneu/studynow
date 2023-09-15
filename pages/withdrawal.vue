@@ -97,13 +97,8 @@ export default {
                 })
         },
         formatCardNumber() {
-            // Удаляем все символы, кроме цифр
             this.cardNumber = this.cardNumber.replace(/\D/g, '');
-
-            // Добавляем разделитель каждые 4 символа
             this.cardNumber = this.cardNumber.replace(/(.{4})/g, '$1 ');
-
-            // Обрезаем карточный номер до максимальной длины
             this.cardNumber = this.cardNumber.slice(0, this.cardNumberMaxLength);
         }
     },

@@ -14,7 +14,7 @@
             <div class="chatlist__item" v-for="chat in chats" :key="chat.id"
                 @click="newChat(chat.id, chat.buyer.user.first_name)">
                 <div>
-                    <span>{{ chat.seller.buyer.first_name }}</span>
+                    <span>{{ chat.buyer.user.first_name }}</span>
                     <small>{{ getLastMessageTime(chat) }}</small>
                 </div>
                 <p>{{ getLastMessageText(chat) }}</p>
@@ -95,13 +95,11 @@ export default {
     },
     computed: {
         lastMessage() {
-            // Возвращает последнее сообщение из массива messages, если он не пустой
             return this.chat.messages.length > 0 ? this.chat.messages[this.chat.messages.length - 1] : null;
         },
     },
     methods: {
         getLastMessageTime(chat) {
-            // Возвращает отформатированное время последнего сообщения в чате
             const lastMessage = chat.messages && chat.messages.length > 0
                 ? chat.messages[chat.messages.length - 1]
                 : null;
@@ -111,7 +109,6 @@ export default {
                 : '';
         },
         getLastMessageText(chat) {
-            // Возвращает текст последнего сообщения в чате
             const lastMessage = chat.messages && chat.messages.length > 0
                 ? chat.messages[chat.messages.length - 1]
                 : null;
@@ -127,7 +124,6 @@ export default {
             return `${formattedHours}:${formattedMinutes}`;
         },
         time(dateTime) {
-            // Возвращает отформатированное время (часы:минуты) из переданного dateTime
             const date = new Date(dateTime);
             const hours = date.getHours().toString().padStart(2, '0');
             const minutes = date.getMinutes().toString().padStart(2, '0');
@@ -175,12 +171,10 @@ export default {
             console.log(event.data);
             const msg = JSON.parse(event.data);
             if (msg.type === 'chat.message' && msg.messages) {
-                // Добавляем только последнее сообщение
                 const lastMessage = msg.messages[msg.messages.length - 1];
                 this.messages.push(lastMessage);
                 this.getChats();
             } else {
-                // Обновляем массив messages, заменяя его содержимое на новое
                 this.messages = msg;
                 this.getChats();
             }

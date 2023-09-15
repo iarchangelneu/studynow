@@ -44,11 +44,9 @@ export default {
       for (let i = 0; i < cookies.length; i++) {
         const cookie = cookies[i].trim();
         if (cookie.startsWith("Authorization=")) {
-          // Cookie с именем "Authorization" существует
           return true;
         }
       }
-      // Cookie с именем "Authorization" не существует
       return false;
     },
     getAuthorizationCookie() {
