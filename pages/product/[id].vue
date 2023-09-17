@@ -7,15 +7,23 @@
             <h1>{{ product.name }}</h1>
 
 
+            <div class="images__slider">
+                <swiper :slides-per-view="2" :space-between="20" :modules="modules" :navigation="navigation">
+                    <swiper-slide class="slide" v-for="img in product.add_image" :key="img.id">
+                        <div class="slide-content">
+                            <img :src="img.image" alt="" width="165" height="110">
+                        </div>
+                    </swiper-slide>
+                    <img src="@/assets/img/next.svg" class="next" alt="" loading="lazy">
+                </swiper>
 
+            </div>
             <div class="product__info">
                 <div class="product__images">
                     <img v-for="img in product.add_image" :src="img.image" alt="" loading="lazy">
                     <!-- <img src="@/assets/img/product2.png" alt="" loading="lazy">
                     <img src="@/assets/img/product3.png" alt="" loading="lazy"> -->
                 </div>
-
-
                 <div class="w-100">
 
                     <div class="product__full">
@@ -97,6 +105,12 @@
     </div>
 </template>
 <script>
+// Import Swiper Vue.js components
+import { Navigation } from 'swiper/modules';
+import { Swiper, SwiperSlide } from 'swiper/vue';
+
+// Import Swiper styles
+import 'swiper/css';
 import global from '~/mixins/global';
 import axios from 'axios';
 export default {
@@ -110,7 +124,16 @@ export default {
             category: '',
             rating: null,
             count: null,
+            modules: [Navigation],
+            navigation: {
+                nextEl: '.next',
+            },
         }
+    },
+    components: {
+        Swiper,
+        SwiperSlide,
+
     },
     methods: {
         addToCart() {
@@ -171,6 +194,33 @@ useSeoMeta({
 })
 </script>
 <style lang="scss" scoped>
+.images__slider {
+    display: none;
+    overflow: hidden;
+
+    .slide {
+        position: relative;
+    }
+
+    .next {
+        position: absolute;
+        right: 0;
+        top: 20%;
+        z-index: 20;
+    }
+
+    .swiper-slide {}
+
+    @media (max-width: 500px) {
+        display: flex;
+    }
+
+    // img {
+    //     width: 165px;
+    //     height: 110px;
+    // }
+}
+
 .product {
     padding: 120px 110px 55px;
 
@@ -443,6 +493,10 @@ useSeoMeta({
                     flex-direction: row;
                     flex-wrap: wrap;
                     gap: 20px;
+                }
+
+                @media (max-width: 500px) {
+                    display: none;
                 }
 
                 @media (max-width: 389px) {

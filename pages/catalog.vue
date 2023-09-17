@@ -164,6 +164,7 @@ export default {
             let url = `${this.pathUrl}/api/products/all-product`;
             if (searchParam) {
                 url += `?name__icontains=${searchParam}`;
+                this.search = searchParam
             }
             if (categoryParam) {
                 url += `?category__in=${categoryParam}`;
@@ -184,9 +185,9 @@ export default {
                 axios
                     .get(this.catalog.next)
                     .then(response => {
+                        this.$refs.showmore.innerHTML = 'Показать еще'
                         this.catalog.results.push(...response.data.results);
                         this.catalog.next = response.data.next;
-                        this.$refs.showmore.innerHTML = 'Показать еще'
                     })
                     .catch(error => {
                         console.error(error);

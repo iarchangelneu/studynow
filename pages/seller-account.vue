@@ -52,7 +52,7 @@
                         <div>
                             <h1>{{ product.name }}</h1>
                             <small>{{ product.price == 0 ? 'Бесплатно' : (Math.floor(product.price - ((product.price *
-                                                            product.discount) / 100))).toLocaleString() + ' ₸' }}</small>
+                                product.discount) / 100))).toLocaleString() + ' ₸' }}</small>
                         </div>
 
 
@@ -77,8 +77,8 @@
                         <div>
                             <h1>{{ item.products.name }}</h1>
                             <small>{{ item.products.price == 0 ? 'Бесплатно' : (Math.floor(item.products.price -
-                                                            ((item.products.price *
-                                                            item.products.discount) / 100))).toLocaleString() + ' ₸' }}</small>
+                                ((item.products.price *
+                                    item.products.discount) / 100))).toLocaleString() + ' ₸' }}</small>
                         </div>
 
                         <div>
@@ -355,14 +355,14 @@ useSeoMeta({
 <style lang="scss" scoped>
 .bigimg {
 
-    width: 470px;
+    min-width: 470px;
     height: 308px;
     border-radius: 10px;
     object-fit: cover;
 
     @media (max-width: 1024px) {
-        width: 100%;
-        height: auto;
+        min-width: 100%;
+        height: 230px;
     }
 
 }

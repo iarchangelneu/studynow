@@ -1,8 +1,17 @@
 <template>
-  <TheHeader />
-  <div>
-    <NuxtPage />
-  </div>
+  <div class="fullpage">
+    <TheHeader />
 
-  <TheFooter />
+    <NuxtPage />
+
+    <TheFooter />
+  </div>
 </template>
+<style lang="scss">
+.fullpage {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 100vh;
+}
+</style>

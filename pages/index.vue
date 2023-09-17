@@ -43,7 +43,7 @@
 
                         <ul class="dot-list" v-if="item.key_features">
                             <li v-for="(feature, index) in item.key_features.split('\r\n').slice(0, 3)" :key="index">{{
-                                                            feature }}
+                                feature }}
                             </li>
                         </ul>
 
@@ -54,7 +54,7 @@
                             </span>
                             <h3 v-if="item.discount > 0">
                                 {{ (Math.floor(item.price - ((item.price * item.discount) / 100))).toLocaleString() + ' ₸'
-                                                                }}</h3>
+                                }}</h3>
                             <h3 v-else>{{ item.price == 0 ? 'Бесплатно' : item.price.toLocaleString() + ' ₸' }}</h3>
                         </div>
 
@@ -78,7 +78,7 @@
             <div class="category">
                 <h1>Категории</h1>
 
-                <div class="category__block">
+                <div class="category__block pccat">
                     <div>
                         <NuxtLink to="/catalog?category=1">
                             <span> IT</span>
@@ -176,6 +176,109 @@
 
 
                 </div>
+                <div class="category__block mobcat">
+                    <div>
+                        <NuxtLink to="/catalog?category=1">
+                            <span> IT</span>
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
+                        </NuxtLink>
+                        <NuxtLink to="/catalog?category=2">
+                            <span> Красота и здоровье</span>
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
+                        </NuxtLink>
+                        <NuxtLink to="/catalog?category=3">
+                            <span>Творчество и хобби</span>
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
+                        </NuxtLink>
+                        <NuxtLink to="/catalog?category=4">
+                            <span> Психология</span>
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
+                        </NuxtLink>
+
+                        <NuxtLink to="/catalog?category=5">
+                            <span> Духовное развитие</span>
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
+                        </NuxtLink>
+                        <NuxtLink to="/catalog?category=6">
+                            <span> Дети</span>
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
+                        </NuxtLink>
+                        <NuxtLink to="/catalog?category=7">
+                            <span>Маркетинг</span>
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
+                        </NuxtLink>
+                        <NuxtLink to="/catalog?category=8">
+                            <span>Финансы</span>
+                            <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
+                        </NuxtLink>
+                    </div>
+                    <div class="mt-3">
+                        <div class="collapse" id="collapseExample">
+                            <div>
+                                <NuxtLink to="/catalog?category=9">
+                                    <span> Радиотехника</span>
+                                    <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
+                                </NuxtLink>
+                                <NuxtLink to="/catalog?category=10">
+                                    <span> Бесплатные курсы</span>
+                                    <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
+                                </NuxtLink>
+                                <NuxtLink to="/catalog?category=11">
+                                    <span>Приготовление пищи</span>
+                                    <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
+                                </NuxtLink>
+                                <NuxtLink to="/catalog?category=12">
+                                    <span>Съёмка</span>
+                                    <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
+                                </NuxtLink>
+
+                            </div>
+
+                            <div>
+                                <NuxtLink to="/catalog?category=13">
+                                    <span> Языки</span>
+                                    <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
+                                </NuxtLink>
+
+                                <NuxtLink to="/catalog?category=14">
+                                    <span>Бизнес</span>
+                                    <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
+                                </NuxtLink>
+
+                                <NuxtLink to="/catalog?category=15">
+                                    <span>Спорт</span>
+                                    <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
+                                </NuxtLink>
+
+                            </div>
+
+                            <div>
+                                <NuxtLink to="/catalog?category=16">
+                                    <span> Разработка игр</span>
+                                    <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
+                                </NuxtLink>
+
+                                <NuxtLink to="/catalog?category=17">
+                                    <span>Продажи</span>
+                                    <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
+                                </NuxtLink>
+
+                                <NuxtLink to="/catalog?category=18">
+                                    <span>Мода</span>
+                                    <img src="@/assets/img/arrownt.svg" alt="" loading="lazy">
+                                </NuxtLink>
+
+                            </div>
+                        </div>
+                        <div class="text-center">
+                            <button class="showmore" type="button" data-toggle="collapse" data-target="#collapseExample"
+                                aria-expanded="false" aria-controls="collapseExample">
+                                <span>Посмотреть все</span>
+                                <img src="@/assets/img/more.svg" alt="">
+                            </button>
+                        </div>
+                    </div>
+                </div>
             </div>
 
             <div class="popular">
@@ -191,7 +294,7 @@
 
                         <ul class="dot-list" v-if="item.key_features">
                             <li v-for="(feature, index) in item.key_features.split('\r\n').slice(0, 3)" :key="index">{{
-                                                            feature }}
+                                feature }}
                             </li>
                         </ul>
 
@@ -202,7 +305,7 @@
                             </span>
                             <h3 v-if="item.discount > 0">
                                 {{ (Math.floor(item.price - ((item.price * item.discount) / 100))).toLocaleString() + ' ₸'
-                                                                }}</h3>
+                                }}</h3>
                             <h3 v-else>{{ item.price == 0 ? 'Бесплатно' : item.price.toLocaleString() + ' ₸' }}</h3>
                         </div>
 
@@ -220,11 +323,18 @@
             </div>
 
             <div class="text__block">
-                <div class="text-right">
-                    <h2> Виртуальное образовательное пространство</h2>
+                <div class="DESIGNGOVO">
+                    <div class="text-right">
+                        <h2> Виртуальное образовательное пространство</h2>
+                    </div>
+                    <div class="text-left">
+                        <h2>предоставляет гибкость обучения, интерактивные материалы,
+                            видеолекции, тексты и практические задания для всех пользователей</h2>
+                    </div>
                 </div>
-                <div class="text-left">
-                    <h2>предоставляет гибкость обучения, интерактивные материалы,
+                <div class="AYAEBALETO">
+                    <h2>Виртуальное образовательное пространство
+                        предоставляет гибкость обучения, интерактивные материалы,
                         видеолекции, тексты и практические задания для всех пользователей</h2>
                 </div>
                 <div class="text-center">
@@ -320,10 +430,10 @@ export default {
         return {
             search: '',
             modules: [Navigation],
+            pathUrl: 'https://studynow.kz',
             navigation: {
                 nextEl: '.next',
                 prevEl: '.prev',
-                pathUrl: 'https://studynow.kz',
             },
             breakpoints: {
                 320: {
@@ -429,6 +539,39 @@ useSeoMeta({
 })
 </script>
 <style lang="scss" scoped>
+.pccat {
+    @media (max-width: 1024px) {
+        display: none !important;
+    }
+}
+
+.mobcat {
+    display: none !important;
+
+    @media (max-width: 1024px) {
+        display: block !important;
+    }
+
+    .collapse:not(.show) {
+        display: none !important;
+    }
+
+    .showmore {
+        background: transparent;
+        border: 0;
+        font-size: 16px;
+        font-style: normal;
+        font-weight: 400;
+        line-height: 130%;
+        font-family: var(--int);
+        color: #000;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 5px;
+    }
+}
+
 .mouse {
     margin-top: 100px;
 
@@ -597,11 +740,28 @@ useSeoMeta({
     }
 
     .text__block {
+        .DESIGNGOVO {
+            @media (max-width: 1024px) {
+                display: none;
+            }
+        }
+
+        .AYAEBALETO {
+            display: none;
+
+            @media (max-width: 1024px) {
+                display: block;
+            }
+        }
 
         margin-top: 80px;
 
         @media (max-width: 1024px) {
             margin-top: 30px;
+        }
+
+        .text-right {
+            text-align: left !important;
         }
 
         h2 {
@@ -624,9 +784,11 @@ useSeoMeta({
             }
 
             @media (max-width: 1024px) {
-                font-size: 18px;
+                font-size: 16px;
+                line-height: 150%;
                 margin: 0;
             }
+
         }
 
         h1 {

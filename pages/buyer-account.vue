@@ -227,14 +227,14 @@ useSeoMeta({
 <style lang="scss" scoped>
 .bigimg {
 
-    width: 470px;
+    min-width: 470px;
     height: 308px;
     border-radius: 10px;
     object-fit: cover;
 
     @media (max-width: 1024px) {
-        width: 100%;
-        height: auto;
+        min-width: 100%;
+        height: 230px;
     }
 
 }
