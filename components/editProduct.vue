@@ -80,17 +80,12 @@
     </div>
 </template>
 <script>
-import { QuillEditor } from '@vueup/vue-quill';
-import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import axios from 'axios';
 import global from '~/mixins/global';
 export default {
     mixins: [global],
     props: {
         productId: Number,
-    },
-    components: {
-        QuillEditor
     },
     data() {
         return {
@@ -261,6 +256,8 @@ export default {
 }
 </script>
 <script setup>
+import { QuillEditor } from '@vueup/vue-quill';
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
 useSeoMeta({
     title: 'Редактирование курса | Studynow',
     ogTitle: 'Редактирование курса | Studynow',

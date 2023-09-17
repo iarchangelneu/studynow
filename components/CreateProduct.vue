@@ -80,15 +80,10 @@
     </div>
 </template>
 <script>
-import { QuillEditor } from '@vueup/vue-quill';
-import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import global from '~/mixins/global';
 import axios from 'axios';
 export default {
     mixins: [global],
-    components: {
-        QuillEditor
-    },
     data() {
         return {
             selectedCategory: null,
@@ -246,12 +241,17 @@ export default {
 }
 </script>
 <script setup>
+import { QuillEditor } from '@vueup/vue-quill';
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
+
 useSeoMeta({
     title: 'Добавление курса | Studynow',
     ogTitle: 'Добавление курса | Studynow',
     description: 'Добавление курса | Studynow',
     ogDescription: 'Добавление курса | Studynow',
 })
+
+
 </script>
 <style lang="scss" scoped>
 .text-center {

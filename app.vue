@@ -22,26 +22,26 @@
 </style>
 <style>
 .ql-editor {
-  height: 200px;
-  border-radius: 10px;
+  height: 200px !important;
+  border-radius: 10px !important;
   /* Например, 300px */
 }
 
 .ql-editor {
-  border: 2px solid #000;
-  border-top: 0;
-  border-top-left-radius: 0;
-  border-top-right-radius: 0;
+  border: 2px solid #000 !important;
+  border-top: 0 !important;
+  border-top-left-radius: 0 !important;
+  border-top-right-radius: 0 !important;
 }
 
 .ql-container.ql-snow {
-  border: 0;
+  border: 0 !important;
 }
 
 .ql-toolbar.ql-snow {
-  border: 2px solid #000;
-  border-radius: 10px;
-  border-bottom-right-radius: 0;
-  border-bottom-left-radius: 0;
+  border: 2px solid #000 !important;
+  border-radius: 10px !important;
+  border-bottom-right-radius: 0 !important;
+  border-bottom-left-radius: 0 !important;
 }
 </style>
