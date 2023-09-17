@@ -66,7 +66,9 @@
                 </div>
                 <div>
                     <label for="tabs">Описание товара</label>
-                    <textarea name="" id="" cols="30" rows="10" v-model="description"></textarea>
+                    <ClientOnly>
+                        <QuillEditor theme="snow" v-model:content="description" contentType="html" />
+                    </ClientOnly>
 
                 </div>
             </div>
@@ -78,12 +80,17 @@
     </div>
 </template>
 <script>
+import { QuillEditor } from '@vueup/vue-quill';
+import '@vueup/vue-quill/dist/vue-quill.snow.css';
 import axios from 'axios';
 import global from '~/mixins/global';
 export default {
     mixins: [global],
     props: {
         productId: Number,
+    },
+    components: {
+        QuillEditor
     },
     data() {
         return {
