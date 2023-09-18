@@ -87,7 +87,13 @@ export default {
                         this.$refs.outBtn.innerHTML = 'УСПЕШНО'
                     }
                     if (response.status == 228) {
-                        this.$refs.outBtn.innerHTML = response.data.error_msg
+                        if (response.data.error_msg == 'ov_merchant_balance_insufficient') {
+                            this.$refs.outBtn.innerHTML = 'Недостаточно средств'
+                        }
+                        else {
+                            this.$refs.outBtn.innerHTML = response.data.error_msg
+                        }
+
                     }
 
                 })
